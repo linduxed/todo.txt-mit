@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 
+VERSION = 'v0.0.1'.freeze
+
 class CLI
   def run
     show_usage_and_exit if usage_requested?
+    show_version_and_exit if version_requested?
   end
 
   private
@@ -13,6 +16,11 @@ class CLI
       ARGV[0] == 'usage'
   end
 
+  def version_requested?
+    ARGV[0] == '-v' ||
+      ARGV[0] == '--version'
+  end
+
   def show_usage_and_exit
     usage_message = <<-EOF
       Most Important Tasks (MIT):
@@ -21,12 +29,20 @@ class CLI
         mit [-h|--help]
 
         -h, --help      Displays help message.
+        -v, --version   Displays version information.
     EOF
 
     # Remove leading indentation
     usage_message.gsub!(/^#{usage_message.scan(/^[ \t]*(?=\S)/).min}/, '')
 
     $stdout.puts usage_message
+    exit 0
+  end
+
+  def show_version_and_exit
+    version_message = "mit (ruby) #{VERSION}"
+
+    $stdout.puts version_message
     exit 0
   end
 end

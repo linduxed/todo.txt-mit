@@ -36,6 +36,7 @@ describe 'Printing usage' do
     [
       /MIT/,
       /-h.+--help.+help/,
+      /-v.+--version.+version/,
     ].each do |regex|
       expect(executable.lines).to include(regex)
     end
