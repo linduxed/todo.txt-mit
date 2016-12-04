@@ -1,6 +1,19 @@
 require 'spec_helper'
 
 describe 'Printing usage' do
+  context 'user invokes usage with "todo.sh help"' do
+    specify 'usage message is printed' do
+      executable = Executable.run(
+        'usage',
+        prepend_program_name_to_args: false
+      )
+
+      expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+      expect(executable.exit_code).to eq(0)
+      usage_message_shown?(executable)
+    end
+  end
+
   context 'user requests usage with "todo.sh mit usage"' do
     specify 'usage message is printed' do
       executable = Executable.run('usage')
