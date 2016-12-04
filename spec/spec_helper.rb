@@ -11,7 +11,7 @@ class Executable
     new(args_string).tap(&:run)
   end
 
-  def initialize(args_string = '')
+  def initialize(args_string)
     @args_string = args_string
   end
 
