@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+class CLI
+  def run
+    show_usage_and_exit if usage_requested?
+  end
+
+  private
+
+  def usage_requested?
+    ARGV[0] == '-h' ||
+      ARGV[0] == '--help' ||
+      ARGV[0] == 'usage'
+  end
+
+  def show_usage_and_exit
+    usage_message = <<-EOF
+      Most Important Tasks (MIT):
+        Displays Most Important Tasks (MIT) in todo.txt file, or adds new ones.
+
+        mit [-h|--help]
+
+        -h, --help      Displays help message.
+    EOF
+
+    # Remove leading indentation
+    usage_message.gsub!(/^#{usage_message.scan(/^[ \t]*(?=\S)/).min}/, '')
+
+    $stdout.puts usage_message
+    exit 0
+  end
+end
+
+CLI.new.run
