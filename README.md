@@ -8,3 +8,17 @@ The main reason for this reimplementation's existence is that I agree with the o
 
 Clone this repo and copy the [`mit`](mit) file into your add-on folder;
 ordinarily the folder name will be `~/.todo.actions.d` (see [Installing Addons](https://github.com/ginatrapani/todo.txt-cli/wiki/Creating-and-Installing-Add-ons) for more information).
+
+## Running the tests
+
+You'll need the [`timecop`](https://github.com/travisjeffery/timecop) and [`rspec`](https://github.com/rspec/rspec) gems installed to be able to run the tests:
+
+```
+gem install rspec timecop
+```
+
+Running the tests is done by invoking `rspec`:
+
+```
+rspec spec
+```

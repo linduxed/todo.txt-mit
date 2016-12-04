@@ -1,6 +1,46 @@
 #!/usr/bin/env ruby
 
+require 'date'
+
 VERSION = 'v0.0.1'.freeze
+
+class TodoFileParser
+  def initialize(todo_file_path)
+    @todo_file_path = todo_file_path
+  end
+
+  def mits
+    todo_lines = File.readlines(@todo_file_path)
+    chomped_todos = todo_lines.map(&:chomp)
+
+    not_completed_todos = chomped_todos.reject { |todo| todo.match(/\Ax /) }
+
+    date_and_task_regex = /\{(\d{4}\.\d{2}\.\d{2})\} (.+)\z/
+    mit_todos_with_date_and_task = not_completed_todos.select do |todo|
+      todo.match(date_and_task_regex)
+    end
+
+    mit_todos_with_date_and_task.map do |todo|
+      matches = todo.match(date_and_task_regex)
+      MIT.new(matches[1], matches[2])
+    end
+  end
+end
+
+class MIT
+  def initialize(date_string, task_string)
+    @date_string = date_string
+    @task_string = task_string
+  end
+
+  def date
+    @date ||= Date.parse(@date_string)
+  end
+
+  def task
+    @task_string
+  end
+end
 
 class CLI
   def run
@@ -13,6 +53,9 @@ class CLI
       exit 0
     when version_requested?
       $stdout.puts version_message
+      exit 0
+    when no_action_arguments?
+      $stdout.puts all_mits_listing
       exit 0
     end
   end
@@ -43,6 +86,10 @@ class CLI
       ARGV[1] == '--version'
   end
 
+  def no_action_arguments?
+    ARGV[2].nil?
+  end
+
   def usage_message
     usage_message = <<-EOF
       Most Important Tasks (MIT):
@@ -60,6 +107,16 @@ class CLI
 
   def version_message
     "mit (ruby) #{VERSION}"
+  end
+
+  def all_mits_listing
+    mits = TodoFileParser.new(ENV['TODO_FILE']).mits
+
+    if mits.empty?
+      'No MITs found.'
+    else
+      mits.map { |mit| "#{mit.date}: #{mit.task}" }
+    end
   end
 end
 
