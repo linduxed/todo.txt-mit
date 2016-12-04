@@ -4,9 +4,17 @@ VERSION = 'v0.0.1'.freeze
 
 class CLI
   def run
-    show_usage_and_exit if usage_requested_from_todo_help?
-    show_usage_and_exit if usage_requested?
-    show_version_and_exit if version_requested?
+    case
+    when usage_requested_from_todo_help?
+      $stdout.puts usage_message
+      exit 0
+    when usage_requested?
+      $stdout.puts usage_message
+      exit 0
+    when version_requested?
+      $stdout.puts version_message
+      exit 0
+    end
   end
 
   private
@@ -35,7 +43,7 @@ class CLI
       ARGV[1] == '--version'
   end
 
-  def show_usage_and_exit
+  def usage_message
     usage_message = <<-EOF
       Most Important Tasks (MIT):
         Displays Most Important Tasks (MIT) in todo.txt file, or adds new ones.
@@ -47,17 +55,11 @@ class CLI
     EOF
 
     # Remove leading indentation
-    usage_message.gsub!(/^#{usage_message.scan(/^[ \t]*(?=\S)/).min}/, '')
-
-    $stdout.puts usage_message
-    exit 0
+    usage_message.gsub(/^#{usage_message.scan(/^[ \t]*(?=\S)/).min}/, '')
   end
 
-  def show_version_and_exit
-    version_message = "mit (ruby) #{VERSION}"
-
-    $stdout.puts version_message
-    exit 0
+  def version_message
+    "mit (ruby) #{VERSION}"
   end
 end
 
