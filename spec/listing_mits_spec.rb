@@ -4,7 +4,13 @@ describe 'Listing MITs' do
   context 'user lists MITs with "todo.sh mit"' do
     context 'with no MITs' do
       specify 'a "No MITs found." message is printed' do
-        with_todo_file_without_mits do |env_extension|
+        no_mits = <<-EOF
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          (B) 2016-11-25 Send email about delivery @work
+          (C) 2016-10-25 That long article @personal +read
+        EOF
+
+        with_fixed_time_and_todo_file(no_mits) do |env_extension|
           executable = Executable.run(env_extension: env_extension)
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -17,7 +23,16 @@ describe 'Listing MITs' do
 
     context 'with MITs present' do
       specify 'only MITs are listed' do
-        with_todo_file_with_two_future_mits do |env_extension|
+        two_future_mits = <<-EOF
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          x 2016-11-30 2016-11-28 {2016.12.04} Read important email @personal
+          (B) 2016-11-25 Send email about delivery @work
+          (C) 2016-10-25 That long article @personal +read
+          2016-11-26 {2016.12.06} Make phone call @personal
+          2016-11-26 {2017.01.01} Update LICENSE file @personal
+        EOF
+
+        with_fixed_time_and_todo_file(two_future_mits) do |env_extension|
           executable = Executable.run(env_extension: env_extension)
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -33,42 +48,9 @@ describe 'Listing MITs' do
     end
   end
 
-  def with_todo_file_without_mits
+  def with_fixed_time_and_todo_file(todos)
     Timecop.freeze(Time.new(2016, 12, 1)) do
       todo_file = Tempfile.new('todo.txt')
-
-      todos = <<-EOF
-        x 2016-11-30 2016-11-30 Buy milk @personal
-        (B) 2016-11-25 Send email about delivery @work
-        (C) 2016-10-25 That long article @personal +read
-      EOF
-      # Remove leading indentation
-      todos.gsub!(/^\s+/, '')
-
-      todo_file.write(todos)
-      todo_file.close
-
-      env_extension = { 'TODO_FILE' => todo_file.path }
-
-      yield(env_extension)
-
-      todo_file.delete
-    end
-  end
-
-  def with_todo_file_with_two_future_mits
-    Timecop.freeze(Time.new(2016, 12, 1)) do
-      todo_file = Tempfile.new('todo.txt')
-
-      todos = <<-EOF
-        x 2016-11-30 2016-11-30 Buy milk @personal
-        x 2016-11-30 2016-11-28 {2016.12.04} Read important email @personal
-        (B) 2016-11-25 Send email about delivery @work
-        (C) 2016-10-25 That long article @personal +read
-        2016-11-26 {2016.12.06} Make phone call @personal
-        2016-11-26 {2017.01.01} Update LICENSE file @personal
-      EOF
-      # Remove leading indentation
       todos.gsub!(/^\s+/, '')
 
       todo_file.write(todos)
