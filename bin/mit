@@ -29,6 +29,34 @@ class TodoFileParser
   end
 end
 
+class MITListFormatter
+  def initialize(mits)
+    @mits = mits
+  end
+
+  def grouped_by_date
+    output_lines = []
+
+    if @mits.any?(&:past_due?)
+      output_lines << 'Past due:'
+      @mits.select(&:past_due?).each do |mit|
+        output_lines << "  #{mit.task}"
+      end
+      output_lines << ''
+    end
+
+    @mits.reject(&:past_due?).group_by(&:date).each do |date, mits|
+      output_lines << date.to_s
+      mits.each do |mit|
+        output_lines << "  #{mit.task}"
+      end
+      output_lines << ''
+    end
+
+    output_lines.join("\n")
+  end
+end
+
 class MIT
   def initialize(date_string, task_string)
     @date_string = date_string
@@ -41,6 +69,10 @@ class MIT
 
   def task
     @task_string
+  end
+
+  def past_due?
+    date < TODAY
   end
 end
 
@@ -117,7 +149,7 @@ class CLI
     if mits.empty?
       'No MITs found.'
     else
-      mits.map { |mit| "#{mit.date}: #{mit.task}" }
+      MITListFormatter.new(mits).grouped_by_date
     end
   end
 end

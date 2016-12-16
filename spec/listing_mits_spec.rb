@@ -45,6 +45,38 @@ describe 'Listing MITs' do
           expect(executable.lines).to include(/Update LICENSE file/)
         end
       end
+
+      context 'with two MITs past due' do
+        specify 'MITs are listed with "Past due"-header before them' do
+          two_mits_past_due = <<-EOF
+            2016-11-26 {2016.11.28} Make phone call @personal
+            2016-11-26 {2016.11.29} Play guitar @personal
+          EOF
+
+          with_fixed_time_and_todo_file(two_mits_past_due) do |env_extension|
+            executable = Executable.run(env_extension: env_extension)
+
+            expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+            expect(executable.exit_code).to eq(0)
+            expect(executable.lines).to include(/\Apast due/i)
+            past_due_header_line = executable.lines.index do |line|
+              line.match(/\Apast due/i)
+            end
+            lines_following_header =
+              executable.lines[past_due_header_line + 1..-1]
+            expect(lines_following_header).to include(/Make phone call/)
+            expect(lines_following_header).to include(/Play guitar/)
+          end
+        end
+      end
+
+      context 'with two MITs due today' do
+        specify 'MITs are listed with "Today"-header before them'
+      end
+
+      context 'with two MITs due tomorrow' do
+        specify 'MITs are listed with "Tomorrow"-header before them'
+      end
     end
   end
 
