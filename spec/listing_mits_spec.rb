@@ -49,18 +49,19 @@ describe 'Listing MITs' do
   end
 
   def with_fixed_time_and_todo_file(todos)
-    Timecop.freeze(Time.new(2016, 12, 1)) do
-      todo_file = Tempfile.new('todo.txt')
-      todos.gsub!(/^\s+/, '')
+    todo_file = Tempfile.new('todo.txt')
+    todos.gsub!(/^\s+/, '')
 
-      todo_file.write(todos)
-      todo_file.close
+    todo_file.write(todos)
+    todo_file.close
 
-      env_extension = { 'TODO_FILE' => todo_file.path }
+    env_extension = {
+      'TODO_FILE' => todo_file.path,
+      'FIXED_DATE' => '2016-12-01',
+    }
 
-      yield(env_extension)
+    yield(env_extension)
 
-      todo_file.delete
-    end
+    todo_file.delete
   end
 end

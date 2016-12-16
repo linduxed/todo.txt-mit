@@ -1,5 +1,4 @@
 require 'open3'
-require 'timecop'
 require 'tempfile'
 
 RSpec.configure do |config|

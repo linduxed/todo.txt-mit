@@ -11,10 +11,10 @@ ordinarily the folder name will be `~/.todo.actions.d` (see [Installing Addons](
 
 ## Running the tests
 
-You'll need the [`timecop`](https://github.com/travisjeffery/timecop) and [`rspec`](https://github.com/rspec/rspec) gems installed to be able to run the tests:
+You'll need the [`rspec`](https://github.com/rspec/rspec) gem installed to be able to run the tests:
 
 ```
-gem install rspec timecop
+gem install rspec
 ```
 
 Running the tests is done by invoking `rspec`:

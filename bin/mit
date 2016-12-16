@@ -4,6 +4,8 @@ require 'date'
 
 VERSION = 'v0.0.1'.freeze
 
+TODAY = ENV.key?('FIXED_DATE') ? Date.parse(ENV['FIXED_DATE']) : Date.today
+
 class TodoFileParser
   def initialize(todo_file_path)
     @todo_file_path = todo_file_path
