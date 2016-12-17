@@ -160,24 +160,24 @@ describe 'Listing MITs' do
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
             expect(executable.exit_code).to eq(0)
-            expect(executable.lines).to include(/\Amonday/i)
-            expect(executable.lines).to include(/\Atuesday/i)
-            expect(executable.lines).to include(/\Athursday/i)
+            expect(executable.lines).to include(/\AMonday/)
+            expect(executable.lines).to include(/\ATuesday/)
+            expect(executable.lines).to include(/\AThursday/)
 
             monday_header_line = executable.lines.index do |line|
-              line.match(/\Amonday/i)
+              line.match(/\AMonday/)
             end
             line_following_header = executable.lines[monday_header_line + 1]
             expect(line_following_header).to match(/Make phone call/)
 
             tuesday_header_line = executable.lines.index do |line|
-              line.match(/\Atuesday/i)
+              line.match(/\ATuesday/)
             end
             line_following_header = executable.lines[tuesday_header_line + 1]
             expect(line_following_header).to match(/Respond to email/)
 
             thursday_header_line = executable.lines.index do |line|
-              line.match(/\Athursday/i)
+              line.match(/\AThursday/)
             end
             line_following_header = executable.lines[thursday_header_line + 1]
             expect(line_following_header).to match(/Send email about delivery/)
@@ -196,10 +196,10 @@ describe 'Listing MITs' do
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
             expect(executable.exit_code).to eq(0)
-            expect(executable.lines).to include(/\Afriday.+next week/i)
+            expect(executable.lines).to include(/\AFriday.+next week/)
 
             next_week_header_line = executable.lines.index do |line|
-              line.match(/\Afriday.+next week/i)
+              line.match(/\AFriday.+next week/)
             end
             line_following_header = executable.lines[next_week_header_line + 1]
             expect(line_following_header).to match(/Make phone call/)
@@ -220,24 +220,24 @@ describe 'Listing MITs' do
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
             expect(executable.exit_code).to eq(0)
-            expect(executable.lines).to include(/\Athursday.+2 weeks/i)
-            expect(executable.lines).to include(/\Asunday.+4 weeks/i)
-            expect(executable.lines).to include(/\Amonday.+6 weeks/i)
+            expect(executable.lines).to include(/\AThursday.+2 weeks/)
+            expect(executable.lines).to include(/\ASunday.+4 weeks/)
+            expect(executable.lines).to include(/\AMonday.+6 weeks/)
 
             two_week_header_line = executable.lines.index do |line|
-              line.match(/\Athursday.+2 weeks/i)
+              line.match(/\AThursday.+2 weeks/)
             end
             line_following_header = executable.lines[two_week_header_line + 1]
             expect(line_following_header).to match(/Make phone call/)
 
             four_week_header_line = executable.lines.index do |line|
-              line.match(/\Asunday.+4 weeks/i)
+              line.match(/\ASunday.+4 weeks/)
             end
             line_following_header = executable.lines[four_week_header_line + 1]
             expect(line_following_header).to match(/Update LICENSE file/)
 
             six_week_header_line = executable.lines.index do |line|
-              line.match(/\Amonday.+6 weeks/i)
+              line.match(/\AMonday.+6 weeks/)
             end
             line_following_header = executable.lines[six_week_header_line + 1]
             expect(line_following_header).to match(/Send email about delivery/)
