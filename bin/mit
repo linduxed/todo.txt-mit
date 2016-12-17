@@ -23,7 +23,7 @@ class TodoFileParser
     end
 
     not_completed_todos = all_todos.reject do |todo|
-      todo.line.match(/\Ax /)
+      todo.line.start_with?('x ')
     end
 
     not_completed_todos.
