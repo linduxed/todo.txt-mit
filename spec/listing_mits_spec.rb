@@ -10,7 +10,7 @@ describe 'Listing MITs' do
           (C) 2016-10-25 That long article @personal +read
         EOF
 
-        with_fixed_time_and_todo_file(no_mits) do |env_extension|
+        with_fixed_time_and_todo_file('2016-12-01', no_mits) do |env_extension|
           executable = Executable.run(env_extension: env_extension)
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -32,7 +32,7 @@ describe 'Listing MITs' do
           2016-11-26 {2017.01.01} Update LICENSE file @personal
         EOF
 
-        with_fixed_time_and_todo_file(two_future_mits) do |env_extension|
+        with_fixed_time_and_todo_file('2016-12-01', two_future_mits) do |env_extension|
           executable = Executable.run(env_extension: env_extension)
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -53,7 +53,7 @@ describe 'Listing MITs' do
             2016-11-26 {2016.11.29} Play guitar @personal
           EOF
 
-          with_fixed_time_and_todo_file(two_mits_past_due) do |env_extension|
+          with_fixed_time_and_todo_file('2016-12-01', two_mits_past_due) do |env_extension|
             executable = Executable.run(env_extension: env_extension)
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -80,7 +80,7 @@ describe 'Listing MITs' do
     end
   end
 
-  def with_fixed_time_and_todo_file(todos)
+  def with_fixed_time_and_todo_file(date_string, todos)
     todo_file = Tempfile.new('todo.txt')
     todos.gsub!(/^\s+/, '')
 
@@ -89,7 +89,7 @@ describe 'Listing MITs' do
 
     env_extension = {
       'TODO_FILE' => todo_file.path,
-      'FIXED_DATE' => '2016-12-01',
+      'FIXED_DATE' => date_string,
     }
 
     yield(env_extension)
