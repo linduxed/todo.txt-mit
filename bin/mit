@@ -5,27 +5,30 @@ require 'date'
 VERSION = 'v0.0.1'.freeze
 
 TODAY = ENV.key?('FIXED_DATE') ? Date.parse(ENV['FIXED_DATE']) : Date.today
+MIT_DATE_REGEX = /\{(\d{4}\.\d{2}\.\d{2})\}/
 
 class TodoFileParser
+  TODOWithNumber = Struct.new(:line, :number)
+
   def initialize(todo_file_path)
     @todo_file_path = todo_file_path
   end
 
   def mits
     todo_lines = File.readlines(@todo_file_path)
-    chomped_todos = todo_lines.map(&:chomp)
+    chomped_lines = todo_lines.map(&:chomp)
 
-    not_completed_todos = chomped_todos.reject { |todo| todo.match(/\Ax /) }
-
-    date_and_task_regex = /\{(\d{4}\.\d{2}\.\d{2})\} (.+)\z/
-    mit_todos_with_date_and_task = not_completed_todos.select do |todo|
-      todo.match(date_and_task_regex)
+    all_todos = chomped_lines.map.with_index do |line, index|
+      TODOWithNumber.new(line, index + 1)
     end
 
-    mit_todos_with_date_and_task.map do |todo|
-      matches = todo.match(date_and_task_regex)
-      MIT.new(matches[1], matches[2])
+    not_completed_todos = all_todos.reject do |todo|
+      todo.line.match(/\Ax /)
     end
+
+    not_completed_todos.
+      select { |todo| todo.line.match(MIT_DATE_REGEX) }.
+      map { |todo| MIT.new(todo.line, todo.number) }
   end
 end
 
@@ -131,21 +134,35 @@ class DateFormatter
 end
 
 class MIT
-  def initialize(date_string, task_string)
-    @date_string = date_string
-    @task_string = task_string
+  def initialize(todo, number)
+    @todo = todo
+    @number = number
   end
 
   def date
-    @date ||= Date.parse(@date_string)
+    @date ||= Date.parse(@todo.match(MIT_DATE_REGEX)[1])
   end
 
   def to_s
-    @task_string
+    @to_s ||= "#{priority_token}#{task} #{number}"
   end
 
   def past_due?
     date < TODAY
+  end
+
+  private
+
+  def task
+    @todo.split(MIT_DATE_REGEX).last.strip
+  end
+
+  def priority_token
+    if p = @todo.match(/\A\([A-Z]\) /) then p[0] else nil end
+  end
+
+  def number
+    "(#{@number})"
   end
 end
 

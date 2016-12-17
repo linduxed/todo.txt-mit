@@ -46,6 +46,35 @@ describe 'Listing MITs' do
         end
       end
 
+      specify 'MITs are listed with their TODO-number and priority' do
+        two_future_mits = <<-EOF
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          x 2016-11-30 2016-11-28 {2016.12.04} Read important email @personal
+          (B) 2016-11-26 {2016.12.06} Make phone call @personal
+          (B) 2016-11-25 Send email about delivery @work
+          (A) 2016-11-26 {2016.12.15} That long article @personal +read
+        EOF
+
+        with_fixed_time_and_todo_file('2016-12-01', two_future_mits) do |env_extension|
+          executable = Executable.run(env_extension: env_extension)
+
+          expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+          expect(executable.exit_code).to eq(0)
+
+          phone_call_line = executable.lines.find do |line|
+            line.match(/Make phone call/)
+          end
+          expect(phone_call_line).to match(/\(B\)/)
+          expect(phone_call_line).to match(/\(3\)/)
+
+          long_article_line = executable.lines.find do |line|
+            line.match(/That long article/)
+          end
+          expect(long_article_line).to match(/\(A\)/)
+          expect(long_article_line).to match(/\(5\)/)
+        end
+      end
+
       context 'with two MITs past due' do
         specify 'MITs are listed with "Past due"-header before them' do
           two_mits_past_due = <<-EOF
