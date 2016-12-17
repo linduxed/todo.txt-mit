@@ -40,7 +40,7 @@ class MITListFormatter
     if @mits.any?(&:past_due?)
       output_lines << 'Past due:'
       @mits.select(&:past_due?).each do |mit|
-        output_lines << "  #{mit.task}"
+        output_lines << "  #{mit}"
       end
       output_lines << ''
     end
@@ -53,7 +53,7 @@ class MITListFormatter
 
       output_lines << DateFormatter.new(date).format
       mits_for_date.each do |mit|
-        output_lines << "  #{mit.task}"
+        output_lines << "  #{mit}"
       end
       output_lines << ''
     end
@@ -140,7 +140,7 @@ class MIT
     @date ||= Date.parse(@date_string)
   end
 
-  def task
+  def to_s
     @task_string
   end
 
