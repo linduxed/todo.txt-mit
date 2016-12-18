@@ -6,7 +6,7 @@ The main reason for this reimplementation's existence is that I agree with the o
 
 ## Installation
 
-Clone this repo and copy the [`mit`](mit) file into your add-on folder;
+Clone this repo and copy the [`bin/mit`](bin/mit) file into your add-on folder;
 ordinarily the folder name will be `~/.todo.actions.d` (see [Installing Addons](https://github.com/ginatrapani/todo.txt-cli/wiki/Creating-and-Installing-Add-ons) for more information).
 
 ## Running the tests
