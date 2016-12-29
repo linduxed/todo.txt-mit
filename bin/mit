@@ -219,10 +219,13 @@ class CLI
       Most Important Tasks (MIT):
         Displays Most Important Tasks (MIT) in todo.txt file, or adds new ones.
 
-        mit [-h|--help]
+        mit [-h|--help|-v|--version]
 
         -h, --help      Displays help message.
         -v, --version   Displays version information.
+
+        mit
+          List all MITs with default formatting.
     EOF
 
     # Remove leading indentation
