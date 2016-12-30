@@ -1,3 +1,6 @@
+require_relative 'constants'
+require_relative 'mit'
+
 class TodoFileParser
   TODOWithNumber = Struct.new(:line, :number)
 

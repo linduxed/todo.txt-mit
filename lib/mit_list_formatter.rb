@@ -1,3 +1,5 @@
+require_relative 'date_formatter'
+
 class MITListFormatter
   def initialize(mits)
     @mits = mits

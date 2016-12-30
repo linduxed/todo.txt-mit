@@ -3,10 +3,5 @@
 require 'date'
 
 require_relative '../lib/cli'
-require_relative '../lib/constants'
-require_relative '../lib/date_formatter'
-require_relative '../lib/mit'
-require_relative '../lib/mit_list_formatter'
-require_relative '../lib/todo_file_parser'
 
 CLI.new.run

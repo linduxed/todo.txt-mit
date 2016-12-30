@@ -1,3 +1,6 @@
+require_relative 'todo_file_parser'
+require_relative 'mit_list_formatter'
+
 class CLI
   def run
     case
