@@ -13,6 +13,8 @@ class TodoFileParser
     chomped_lines = todo_lines.map(&:chomp)
 
     all_todos = chomped_lines.map.with_index do |line, index|
+      # todo.sh uses the line numbers of the tasks as their IDs.
+      # The IDs are 1-indexed, which is why `index` is incremented by 1.
       TODOWithNumber.new(line, index + 1)
     end
 
