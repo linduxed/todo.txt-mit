@@ -6,8 +6,23 @@ The main reason for this reimplementation's existence is that I agree with the o
 
 ## Installation
 
-Clone this repo and copy the [`bin/mit`](bin/mit) file into your add-on folder;
-ordinarily the folder name will be `~/.todo.actions.d` (see [Installing Addons](https://github.com/ginatrapani/todo.txt-cli/wiki/Creating-and-Installing-Add-ons) for more information).
+Start by cloning this repo.
+As with all other add-ons, you'll need to place an executable in your `~/.todo.actions.d` folder (see [Installing Addons](https://github.com/ginatrapani/todo.txt-cli/wiki/Creating-and-Installing-Add-ons) for more information).
+
+For this add-on, you can either create a symlink in the `~/.todo.actions.d` folder pointing to the executable ([`bin/mit`](bin/mit)), or generate a single file script that you can place in said folder.
+
+#### Symlink
+
+```plain
+ln -s ~/.todo.actions.d/mit /foo/bar/todo.txt-mit/bin/mit
+```
+
+#### Generated script
+
+```plain
+/foo/bar/todo.txt-mit/generate_script > ~/.todo.actions.d/mit
+chmod +x ~/.todo.actions.d/mit
+```
 
 ## Running the tests
 
