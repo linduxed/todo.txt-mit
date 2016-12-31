@@ -2,6 +2,8 @@ require_relative 'todo_file_parser'
 require_relative 'mit_list_formatter'
 
 class CLI
+  class BadActionError < StandardError; end
+
   EX_USAGE = 64
 
   def run
@@ -19,9 +21,11 @@ class CLI
       $stdout.puts all_mits_listing
       exit 0
     else
-      $stderr.puts usage_message
-      exit EX_USAGE
+      fail BadActionError
     end
+  rescue BadActionError
+    $stderr.puts usage_message
+    exit EX_USAGE
   end
 
   private
