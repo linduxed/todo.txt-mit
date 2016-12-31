@@ -2,6 +2,8 @@ require_relative 'todo_file_parser'
 require_relative 'mit_list_formatter'
 
 class CLI
+  EX_USAGE = 64
+
   def run
     case
     when usage_requested_from_todo_help?
@@ -16,6 +18,9 @@ class CLI
     when no_action_arguments?
       $stdout.puts all_mits_listing
       exit 0
+    else
+      $stderr.puts usage_message
+      exit EX_USAGE
     end
   end
 
