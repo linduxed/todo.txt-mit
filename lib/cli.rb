@@ -51,7 +51,7 @@ class CLI
   end
 
   def no_action_arguments?
-    ARGV[2].nil?
+    ARGV[1].nil?
   end
 
   def usage_message
