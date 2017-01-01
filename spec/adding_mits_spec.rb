@@ -37,8 +37,8 @@ describe 'Adding MITs' do
     end
   end
 
-  describe 'with the format `todo.sh mit WEEKDAY "foobar"`' do
-    specify 'a MIT is added for the WEEKDAY "today"' do
+  describe 'with the format `todo.sh mit DAY "foobar"`' do
+    specify 'a MIT is added for the DAY "today"' do
       fixed_time = '2016-12-01'
       fixed_time_in_mit_form = '2016.12.01'
       various_todos = <<-EOF
@@ -72,7 +72,7 @@ describe 'Adding MITs' do
       end
     end
 
-    specify 'WEEKDAY can be of any case' do
+    specify 'DAY can be of any case' do
       fixed_time = '2016-12-01'
       fixed_time_in_mit_form = '2016.12.01'
       various_todos = <<-EOF
