@@ -73,6 +73,32 @@ describe 'Adding MITs' do
         end
       end
     end
+
+    specify 'WEEKDAY can be of any case' do
+      fixed_time = '2016-12-01'
+      fixed_time_in_mit_form = '2016.12.01'
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+
+      with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+        executable = Executable.run(
+          'add ToDaY "Run errand @work"',
+          env_extension: env_extension
+        )
+
+        expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+        expect(executable.exit_code).to eq(0)
+        todo_file_lines = File.readlines(todo_file.path)
+        expect(todo_file_lines.last).to match(
+          /^{#{fixed_time_in_mit_form}} Run errand @work$/
+        )
+      end
+    end
   end
 
   describe 'automated addition of creation date to MITs' do

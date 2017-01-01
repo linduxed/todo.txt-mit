@@ -2,7 +2,7 @@ require_relative 'constants'
 
 class DateParser
   def initialize(date_string)
-    @date_string = date_string
+    @date_string = date_string.downcase
   end
 
   def parse
