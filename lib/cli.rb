@@ -12,16 +12,16 @@ class CLI
     when usage_requested_from_todo_help?
       $stdout.puts usage_message
       exit 0
-    when usage_requested?
+    when %w(usage -h --help).include?(ARGV[1])
       $stdout.puts usage_message
       exit 0
-    when version_requested?
+    when %w(-v --version).include?(ARGV[1])
       $stdout.puts version_message
       exit 0
-    when no_action_arguments?
+    when ARGV[1].nil?
       $stdout.puts all_mits_listing
       exit 0
-    when add_action?
+    when ARGV[1] == 'add'
       message = TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
         date: ARGV[2],
         task: ARGV[3],
@@ -54,25 +54,6 @@ class CLI
     # in ARGV[0].
 
     ARGV[0] == 'usage'
-  end
-
-  def usage_requested?
-    ARGV[1] == 'usage' ||
-      ARGV[1] == '-h' ||
-      ARGV[1] == '--help'
-  end
-
-  def version_requested?
-    ARGV[1] == '-v' ||
-      ARGV[1] == '--version'
-  end
-
-  def no_action_arguments?
-    ARGV[1].nil?
-  end
-
-  def add_action?
-    ARGV[1] == 'add'
   end
 
   def usage_message
