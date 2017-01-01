@@ -18,7 +18,7 @@ class TodoFileMutator
       else
         ''
       end
-    mit = "#{optional_creation_date}{#{date}} #{task}"
+    mit = "#{optional_creation_date}{#{parsed_date}} #{task}"
 
     write_mit_at_end_of_todo_file(mit)
 
