@@ -39,6 +39,42 @@ describe 'Adding MITs' do
         end
       end
     end
+
+    context 'ENV["TODOTXT_DATE_ON_ADD"] is not set' do
+      specify 'a MIT without a creation date is added to the TODO_FILE' do
+        various_todos = <<-EOF
+          (A) Important email +read
+          That long article @personal +read
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          (B) {2016.11.29} Play guitar @personal
+          2016-11-26 Make phone call @personal
+        EOF
+        original_todo_count = various_todos.split("\n").count
+
+        with_fixed_time_and_todo_file('2016-12-01', various_todos) do |todo_file, env_extension|
+          mit_date = '2016.12.05'
+
+          executable = Executable.run(
+            "add #{mit_date} \"Run errand @work\"",
+            env_extension: env_extension
+          )
+
+          expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+          expect(executable.exit_code).to eq(0)
+          expect(executable.lines).to include(
+            /\A{#{mit_date}} Run errand @work\z/
+          )
+          expect(executable.lines).to include(
+            "TODO: #{original_todo_count + 1} added."
+          )
+          todo_file_lines = File.readlines(todo_file.path)
+          expect(todo_file_lines.last).to match(
+            /^{#{mit_date}} Run errand @work$/
+          )
+          expect(todo_file_lines.count).to eq(original_todo_count + 1)
+        end
+      end
+    end
   end
 
   def with_fixed_time_and_todo_file(date_string, todos)
