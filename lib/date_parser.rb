@@ -8,6 +8,7 @@ class DateParser
   def parse
     fixed_dates = {
       'today' => Constants::TODAY,
+      'tomorrow' => Constants::TODAY + 1,
     }
 
     fixed_dates.fetch(@date_string, nil) || Date.parse(@date_string)

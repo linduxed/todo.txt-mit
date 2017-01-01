@@ -72,6 +72,40 @@ describe 'Adding MITs' do
       end
     end
 
+    specify 'a MIT is added for the DAY "tomorrow"' do
+      fixed_time = '2016-12-01'
+      tomorrow_in_mit_form = '2016.12.02'
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+      original_todo_count = various_todos.split("\n").count
+
+      with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+        executable = Executable.run(
+          'add tomorrow "Run errand @work"',
+          env_extension: env_extension
+        )
+
+        expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+        expect(executable.exit_code).to eq(0)
+        expect(executable.lines).to include(
+          /\A{#{tomorrow_in_mit_form}} Run errand @work\z/
+        )
+        expect(executable.lines).to include(
+          "TODO: #{original_todo_count + 1} added."
+        )
+        todo_file_lines = File.readlines(todo_file.path)
+        expect(todo_file_lines.last).to match(
+          /^{#{tomorrow_in_mit_form}} Run errand @work$/
+        )
+        expect(todo_file_lines.count).to eq(original_todo_count + 1)
+      end
+    end
+
     specify 'DAY can be of any case' do
       fixed_time = '2016-12-01'
       fixed_time_in_mit_form = '2016.12.01'
