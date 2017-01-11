@@ -106,6 +106,58 @@ describe 'Adding MITs' do
       end
     end
 
+    describe 'weekdays' do
+      fixed_time = '2016-12-01'
+      {
+        'monday' => '2016.12.05',
+        'tuesday' => '2016.12.06',
+        'wednesday' => '2016.12.07',
+        'thursday' => '2016.12.08',
+        'friday' => '2016.12.02',
+        'saturday' => '2016.12.03',
+        'sunday' => '2016.12.04',
+        'mon' => '2016.12.05',
+        'tue' => '2016.12.06',
+        'wed' => '2016.12.07',
+        'thu' => '2016.12.08',
+        'fri' => '2016.12.02',
+        'sat' => '2016.12.03',
+        'sun' => '2016.12.04',
+      }.each do |weekday, mit_date|
+        specify "a MIT is added for the WEEKDAY \"#{weekday}\"" do
+          various_todos = <<-EOF
+            (A) Important email +read
+            That long article @personal +read
+            x 2016-11-30 2016-11-30 Buy milk @personal
+            (B) {2016.11.29} Play guitar @personal
+            2016-11-26 Make phone call @personal
+          EOF
+          original_todo_count = various_todos.split("\n").count
+
+          with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+            executable = Executable.run(
+              "add #{weekday} \"Run errand @work\"",
+              env_extension: env_extension
+            )
+
+            expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+            expect(executable.exit_code).to eq(0)
+            expect(executable.lines).to include(
+              /\A{#{mit_date}} Run errand @work\z/
+            )
+            expect(executable.lines).to include(
+              "TODO: #{original_todo_count + 1} added."
+            )
+            todo_file_lines = File.readlines(todo_file.path)
+            expect(todo_file_lines.last).to match(
+              /^{#{mit_date}} Run errand @work$/
+            )
+            expect(todo_file_lines.count).to eq(original_todo_count + 1)
+          end
+        end
+      end
+    end
+
     specify 'DAY can be of any case' do
       fixed_time = '2016-12-01'
       fixed_time_in_mit_form = '2016.12.01'
