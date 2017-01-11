@@ -14,14 +14,14 @@ For this add-on, you can either create a symlink in the `~/.todo.actions.d` fold
 #### Symlink
 
 ```plain
-ln -s ~/.todo.actions.d/mit /foo/bar/todo.txt-mit/bin/mit
+$ ln -s ~/.todo.actions.d/mit /foo/bar/todo.txt-mit/bin/mit
 ```
 
 #### Generated script
 
 ```plain
-/foo/bar/todo.txt-mit/generate_script > ~/.todo.actions.d/mit
-chmod +x ~/.todo.actions.d/mit
+$ /foo/bar/todo.txt-mit/generate_script > ~/.todo.actions.d/mit
+$ chmod +x ~/.todo.actions.d/mit
 ```
 
 ## Running the tests
