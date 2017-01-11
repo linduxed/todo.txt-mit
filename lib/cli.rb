@@ -1,7 +1,12 @@
+require_relative 'todo_file_mutator'
 require_relative 'todo_file_parser'
 require_relative 'mit_list_formatter'
 
 class CLI
+  class BadActionError < StandardError; end
+
+  EX_USAGE = 64
+
   def run
     case
     when usage_requested_from_todo_help?
@@ -16,7 +21,24 @@ class CLI
     when no_action_arguments?
       $stdout.puts all_mits_listing
       exit 0
+    when add_action?
+      message = TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
+        date: ARGV[2],
+        task: ARGV[3],
+        include_creation_date: ENV['TODOTXT_DATE_ON_ADD'],
+      )
+      $stdout.puts message
+      exit 0
+    else
+      fail BadActionError
     end
+  rescue BadDateError => e
+    $stderr.puts "MIT: #{e.message}"
+    $stderr.puts usage_message
+    exit EX_USAGE
+  rescue BadActionError
+    $stderr.puts usage_message
+    exit EX_USAGE
   end
 
   private
@@ -46,7 +68,11 @@ class CLI
   end
 
   def no_action_arguments?
-    ARGV[2].nil?
+    ARGV[1].nil?
+  end
+
+  def add_action?
+    ARGV[1] == 'add'
   end
 
   def usage_message

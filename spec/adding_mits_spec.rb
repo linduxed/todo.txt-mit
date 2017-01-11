@@ -1,0 +1,262 @@
+require 'spec_helper'
+
+describe 'Adding MITs' do
+  describe 'with the format `todo.sh mit YYYY.MM.DD "foobar"`' do
+    specify 'a MIT is added to the TODO_FILE' do
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+      original_todo_count = various_todos.split("\n").count
+
+      with_fixed_time_and_todo_file('2016-12-01', various_todos) do |todo_file, env_extension|
+        mit_date = '2016.12.05'
+
+        executable = Executable.run(
+          "add #{mit_date} \"Run errand @work\"",
+          env_extension: env_extension
+        )
+
+        expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+        expect(executable.exit_code).to eq(0)
+        expect(executable.lines).to include(
+          /\A{#{mit_date}} Run errand @work\z/
+        )
+        expect(executable.lines).to include(
+          "TODO: #{original_todo_count + 1} added."
+        )
+        todo_file_lines = File.readlines(todo_file.path)
+        expect(todo_file_lines.last).to match(
+          /^{#{mit_date}} Run errand @work$/
+        )
+        expect(todo_file_lines.count).to eq(original_todo_count + 1)
+      end
+    end
+  end
+
+  describe 'with the format `todo.sh mit DAY "foobar"`' do
+    specify 'a MIT is added for the DAY "today"' do
+      fixed_time = '2016-12-01'
+      fixed_time_in_mit_form = '2016.12.01'
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+      original_todo_count = various_todos.split("\n").count
+
+      with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+        executable = Executable.run(
+          'add today "Run errand @work"',
+          env_extension: env_extension
+        )
+
+        expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+        expect(executable.exit_code).to eq(0)
+        expect(executable.lines).to include(
+          /\A{#{fixed_time_in_mit_form}} Run errand @work\z/
+        )
+        expect(executable.lines).to include(
+          "TODO: #{original_todo_count + 1} added."
+        )
+        todo_file_lines = File.readlines(todo_file.path)
+        expect(todo_file_lines.last).to match(
+          /^{#{fixed_time_in_mit_form}} Run errand @work$/
+        )
+        expect(todo_file_lines.count).to eq(original_todo_count + 1)
+      end
+    end
+
+    specify 'a MIT is added for the DAY "tomorrow"' do
+      fixed_time = '2016-12-01'
+      tomorrow_in_mit_form = '2016.12.02'
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+      original_todo_count = various_todos.split("\n").count
+
+      with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+        executable = Executable.run(
+          'add tomorrow "Run errand @work"',
+          env_extension: env_extension
+        )
+
+        expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+        expect(executable.exit_code).to eq(0)
+        expect(executable.lines).to include(
+          /\A{#{tomorrow_in_mit_form}} Run errand @work\z/
+        )
+        expect(executable.lines).to include(
+          "TODO: #{original_todo_count + 1} added."
+        )
+        todo_file_lines = File.readlines(todo_file.path)
+        expect(todo_file_lines.last).to match(
+          /^{#{tomorrow_in_mit_form}} Run errand @work$/
+        )
+        expect(todo_file_lines.count).to eq(original_todo_count + 1)
+      end
+    end
+
+    describe 'weekdays' do
+      fixed_time = '2016-12-01'
+      {
+        'monday' => '2016.12.05',
+        'tuesday' => '2016.12.06',
+        'wednesday' => '2016.12.07',
+        'thursday' => '2016.12.08',
+        'friday' => '2016.12.02',
+        'saturday' => '2016.12.03',
+        'sunday' => '2016.12.04',
+        'mon' => '2016.12.05',
+        'tue' => '2016.12.06',
+        'wed' => '2016.12.07',
+        'thu' => '2016.12.08',
+        'fri' => '2016.12.02',
+        'sat' => '2016.12.03',
+        'sun' => '2016.12.04',
+      }.each do |weekday, mit_date|
+        specify "a MIT is added for the WEEKDAY \"#{weekday}\"" do
+          various_todos = <<-EOF
+            (A) Important email +read
+            That long article @personal +read
+            x 2016-11-30 2016-11-30 Buy milk @personal
+            (B) {2016.11.29} Play guitar @personal
+            2016-11-26 Make phone call @personal
+          EOF
+          original_todo_count = various_todos.split("\n").count
+
+          with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+            executable = Executable.run(
+              "add #{weekday} \"Run errand @work\"",
+              env_extension: env_extension
+            )
+
+            expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+            expect(executable.exit_code).to eq(0)
+            expect(executable.lines).to include(
+              /\A{#{mit_date}} Run errand @work\z/
+            )
+            expect(executable.lines).to include(
+              "TODO: #{original_todo_count + 1} added."
+            )
+            todo_file_lines = File.readlines(todo_file.path)
+            expect(todo_file_lines.last).to match(
+              /^{#{mit_date}} Run errand @work$/
+            )
+            expect(todo_file_lines.count).to eq(original_todo_count + 1)
+          end
+        end
+      end
+    end
+
+    specify 'DAY can be of any case' do
+      fixed_time = '2016-12-01'
+      fixed_time_in_mit_form = '2016.12.01'
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+
+      with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+        executable = Executable.run(
+          'add ToDaY "Run errand @work"',
+          env_extension: env_extension
+        )
+
+        expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+        expect(executable.exit_code).to eq(0)
+        todo_file_lines = File.readlines(todo_file.path)
+        expect(todo_file_lines.last).to match(
+          /^{#{fixed_time_in_mit_form}} Run errand @work$/
+        )
+      end
+    end
+  end
+
+  describe 'automated addition of creation date to MITs' do
+    context 'ENV["TODOTXT_DATE_ON_ADD"] is set' do
+      specify 'a MIT with a creation date is added to the TODO_FILE' do
+        fixed_time = '2016-12-01'
+        various_todos = <<-EOF
+          (A) Important email +read
+          That long article @personal +read
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          (B) {2016.11.29} Play guitar @personal
+          2016-11-26 Make phone call @personal
+        EOF
+
+        with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
+          mit_date = '2016.12.05'
+          env_extension.merge!('TODOTXT_DATE_ON_ADD' => '1')
+
+          executable = Executable.run(
+            "add #{mit_date} \"Run errand @work\"",
+            env_extension: env_extension
+          )
+
+          expect(executable.exit_code).to eq(0)
+          todo_file_lines = File.readlines(todo_file.path)
+          expect(todo_file_lines.last).to match(
+            /^#{fixed_time} {#{mit_date}} Run errand @work$/
+          )
+        end
+      end
+    end
+
+    context 'ENV["TODOTXT_DATE_ON_ADD"] is not set' do
+      specify 'a MIT without a creation date is added to the TODO_FILE' do
+        various_todos = <<-EOF
+          (A) Important email +read
+          That long article @personal +read
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          (B) {2016.11.29} Play guitar @personal
+          2016-11-26 Make phone call @personal
+        EOF
+
+        with_fixed_time_and_todo_file('2016-12-01', various_todos) do |todo_file, env_extension|
+          mit_date = '2016.12.05'
+
+          executable = Executable.run(
+            "add #{mit_date} \"Run errand @work\"",
+            env_extension: env_extension
+          )
+
+          expect(executable.exit_code).to eq(0)
+          todo_file_lines = File.readlines(todo_file.path)
+          expect(todo_file_lines.last).to match(
+            /^{#{mit_date}} Run errand @work$/
+          )
+        end
+      end
+    end
+  end
+
+  def with_fixed_time_and_todo_file(date_string, todos)
+    todo_file = Tempfile.new('todo.txt')
+    todos.gsub!(/^\s+/, '')
+
+    todo_file.write(todos)
+    todo_file.close
+
+    env_extension = {
+      'TODO_FILE' => todo_file.path,
+      'FIXED_DATE' => date_string,
+    }
+
+    yield(todo_file, env_extension)
+
+    todo_file.delete
+  end
+end

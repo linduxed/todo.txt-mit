@@ -20,6 +20,8 @@ class DateFormatter
     end
   end
 
+  private
+
   def today?
     @date == Constants::TODAY
   end
