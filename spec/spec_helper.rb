@@ -55,3 +55,20 @@ class Executable
     File.expand_path('../../bin/mit', __FILE__)
   end
 end
+
+def with_fixed_time_and_todo_file(date_string, todos)
+  todo_file = Tempfile.new('todo.txt')
+  todos.gsub!(/^\s+/, '')
+
+  todo_file.write(todos)
+  todo_file.close
+
+  env_extension = {
+    'TODO_FILE' => todo_file.path,
+    'FIXED_DATE' => date_string,
+  }
+
+  yield(todo_file, env_extension)
+
+  todo_file.delete
+end
