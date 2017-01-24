@@ -29,10 +29,17 @@ class CLI
       )
       $stdout.puts message
       exit 0
+    when ARGV[1] == 'mv'
+      message = TodoFileMutator.new(ENV['TODO_FILE']).make_mit(
+        task_id: ARGV[2],
+        date: ARGV[3],
+      )
+      $stdout.puts message
+      exit 0
     else
       fail BadActionError
     end
-  rescue BadDateError => e
+  rescue BadDateError, BadTaskIDError => e
     $stderr.puts "MIT: #{e.message}"
     $stderr.puts usage_message
     exit EX_USAGE
