@@ -34,7 +34,7 @@ class TodoFileMutator
 
     parsed_date = DateParser.new(date).parse
     raise(BadDateError, "\"#{date}\" is not a valid date.") unless parsed_date
-    mit_date = parsed_date.strftime('%Y.%m.%d')
+    mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
 
     changed_task =
       if already_has_mit_date?(task)
@@ -78,18 +78,18 @@ class TodoFileMutator
     if task.start_with?('x ')
       task.gsub(
         /^x ((#{date_regex} ){0,2})(.+)$/,
-        "x \\1{#{mit_date}} \\3"
+        "x \\1#{mit_date} \\3"
       )
     else
       task.gsub(
         /^(#{priority_regex} )?(#{date_regex} )?(.+)$/,
-        "\\1\\2{#{mit_date}} \\3"
+        "\\1\\2#{mit_date} \\3"
       )
     end
   end
 
   def change_mit_date(task, mit_date)
-    task.gsub(Constants::MIT_DATE_REGEX, "{#{mit_date}}")
+    task.gsub(Constants::MIT_DATE_REGEX, mit_date)
   end
 
   def overwrite_todo_file(tasks)
