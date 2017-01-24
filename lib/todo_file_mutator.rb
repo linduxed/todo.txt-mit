@@ -27,7 +27,7 @@ class TodoFileMutator
     "#{mit}\nTODO: #{number_of_todos_in_todo_file} added."
   end
 
-  def make_mit(task_id:, date:)
+  def move_or_make_mit(task_id:, date:)
     all_tasks = File.readlines(@todo_file_path)
     task = maybe_find_task(task_id, all_tasks)
     raise(BadTaskIDError, "No task for ID: #{task_id}") unless task
@@ -36,8 +36,13 @@ class TodoFileMutator
     raise(BadDateError, "\"#{date}\" is not a valid date.") unless parsed_date
     mit_date = parsed_date.strftime('%Y.%m.%d')
 
-    task_with_added_mit_date = add_mit_date(task, mit_date)
-    all_tasks[task_id.to_i - 1] = task_with_added_mit_date
+    changed_task =
+      if already_has_mit_date?(task)
+        change_mit_date(task, mit_date)
+      else
+        add_mit_date(task, mit_date)
+      end
+    all_tasks[task_id.to_i - 1] = changed_task
     overwrite_todo_file(all_tasks)
 
     "TODO: '#{task.chomp}' moved to #{parsed_date}"
@@ -81,6 +86,10 @@ class TodoFileMutator
         "\\1\\2{#{mit_date}} \\3"
       )
     end
+  end
+
+  def change_mit_date(task, mit_date)
+    task.gsub(Constants::MIT_DATE_REGEX, "{#{mit_date}}")
   end
 
   def overwrite_todo_file(tasks)

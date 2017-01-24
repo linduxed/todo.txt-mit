@@ -30,7 +30,7 @@ class CLI
       $stdout.puts message
       exit 0
     when ARGV[1] == 'mv'
-      message = TodoFileMutator.new(ENV['TODO_FILE']).make_mit(
+      message = TodoFileMutator.new(ENV['TODO_FILE']).move_or_make_mit(
         task_id: ARGV[2],
         date: ARGV[3],
       )
