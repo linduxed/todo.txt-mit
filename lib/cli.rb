@@ -41,7 +41,6 @@ class CLI
     end
   rescue BadDateError, BadTaskIDError => e
     $stderr.puts "MIT: #{e.message}"
-    $stderr.puts usage_message
     exit EX_USAGE
   rescue BadActionError
     $stderr.puts usage_message
