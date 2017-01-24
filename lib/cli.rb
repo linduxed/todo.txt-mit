@@ -74,6 +74,15 @@ class CLI
 
         mit
           List all MITs with default formatting.
+
+        mit DATE|DAY task
+          DATE must be in the format of YYYY.MM.DD.
+          DAY can be full or short day names, today or tomorrow.
+
+        mit mv ID DATE|DAY
+          Move the MIT identified by ID to a new day.
+          DATE must be in the format of YYYY.MM.DD.
+          DAY can be full or short day names, today or tomorrow.
     EOF
 
     # Remove leading indentation
