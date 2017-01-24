@@ -10,7 +10,7 @@ describe 'Listing MITs' do
           (C) 2016-10-25 That long article @personal +read
         EOF
 
-        with_fixed_time_and_todo_file('2016-12-01', no_mits) do |env_extension|
+        with_fixed_time_and_todo_file('2016-12-01', no_mits) do |_, env_extension|
           executable = Executable.run(env_extension: env_extension)
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -32,7 +32,7 @@ describe 'Listing MITs' do
           2016-11-26 {2017.01.01} Update LICENSE file @personal
         EOF
 
-        with_fixed_time_and_todo_file('2016-12-01', two_future_mits) do |env_extension|
+        with_fixed_time_and_todo_file('2016-12-01', two_future_mits) do |_, env_extension|
           executable = Executable.run(env_extension: env_extension)
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -55,7 +55,7 @@ describe 'Listing MITs' do
           (A) 2016-11-26 {2016.12.15} That long article @personal +read
         EOF
 
-        with_fixed_time_and_todo_file('2016-12-01', two_future_mits) do |env_extension|
+        with_fixed_time_and_todo_file('2016-12-01', two_future_mits) do |_, env_extension|
           executable = Executable.run(env_extension: env_extension)
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -82,7 +82,7 @@ describe 'Listing MITs' do
             2016-11-26 {2016.11.29} Play guitar @personal
           EOF
 
-          with_fixed_time_and_todo_file('2016-12-01', two_mits_past_due) do |env_extension|
+          with_fixed_time_and_todo_file('2016-12-01', two_mits_past_due) do |_, env_extension|
             executable = Executable.run(env_extension: env_extension)
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -106,7 +106,7 @@ describe 'Listing MITs' do
             2016-11-26 {2016.12.01} Play guitar @personal
           EOF
 
-          with_fixed_time_and_todo_file('2016-12-01', two_mits_today) do |env_extension|
+          with_fixed_time_and_todo_file('2016-12-01', two_mits_today) do |_, env_extension|
             executable = Executable.run(env_extension: env_extension)
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -130,7 +130,7 @@ describe 'Listing MITs' do
             2016-11-26 {2016.12.02} Play guitar @personal
           EOF
 
-          with_fixed_time_and_todo_file('2016-12-01', two_mits_tomorrow) do |env_extension|
+          with_fixed_time_and_todo_file('2016-12-01', two_mits_tomorrow) do |_, env_extension|
             executable = Executable.run(env_extension: env_extension)
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -155,7 +155,7 @@ describe 'Listing MITs' do
             2016-11-26 {2016.12.08} Send email about delivery @work
           EOF
 
-          with_fixed_time_and_todo_file('2016-12-01', two_mits_tomorrow) do |env_extension|
+          with_fixed_time_and_todo_file('2016-12-01', two_mits_tomorrow) do |_, env_extension|
             executable = Executable.run(env_extension: env_extension)
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -191,7 +191,7 @@ describe 'Listing MITs' do
             2016-11-26 {2016.12.09} Make phone call @personal
           EOF
 
-          with_fixed_time_and_todo_file('2016-12-01', one_mit_next_week) do |env_extension|
+          with_fixed_time_and_todo_file('2016-12-01', one_mit_next_week) do |_, env_extension|
             executable = Executable.run(env_extension: env_extension)
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -215,7 +215,7 @@ describe 'Listing MITs' do
             2016-11-26 {2017.01.09} Send email about delivery @work
           EOF
 
-          with_fixed_time_and_todo_file('2016-12-01', three_future_mits) do |env_extension|
+          with_fixed_time_and_todo_file('2016-12-01', three_future_mits) do |_, env_extension|
             executable = Executable.run(env_extension: env_extension)
 
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
@@ -245,22 +245,5 @@ describe 'Listing MITs' do
         end
       end
     end
-  end
-
-  def with_fixed_time_and_todo_file(date_string, todos)
-    todo_file = Tempfile.new('todo.txt')
-    todos.gsub!(/^\s+/, '')
-
-    todo_file.write(todos)
-    todo_file.close
-
-    env_extension = {
-      'TODO_FILE' => todo_file.path,
-      'FIXED_DATE' => date_string,
-    }
-
-    yield(env_extension)
-
-    todo_file.delete
   end
 end
