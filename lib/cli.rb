@@ -71,9 +71,10 @@ class CLI
   def usage_message
     usage_message = <<-EOF
       Most Important Tasks (MIT):
-        Displays Most Important Tasks (MIT) in todo.txt file, or adds new ones.
+        Displays Most Important Tasks (MIT) in todo.txt file, adds new ones or
+        turns MIT tasks into standard ones.
 
-        mit [-h|--help|-v|--version]
+        mit [-h|--help|-v|--version] [date|day task] [rm ID] [mv ID DATE|DAY]
 
         -h, --help      Displays help message.
         -v, --version   Displays version information.
