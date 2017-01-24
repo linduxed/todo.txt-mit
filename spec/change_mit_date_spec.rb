@@ -63,6 +63,46 @@ describe 'Changing the MIT date of a TODO' do
     end
   end
 
+  context 'a bad date is provided' do
+    specify 'an error is printed' do
+      fixed_time = '2016-12-01'
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+
+      with_fixed_time_and_todo_file(fixed_time, various_todos) do |_, env_extension|
+        executable = Executable.run('mv 2 foobar', env_extension: env_extension)
+
+        expect(executable.exit_code).not_to eq(0)
+        expect(executable.error).to match(/foobar.+valid date/)
+      end
+    end
+  end
+
+  context 'a bad task ID is provided' do
+    specify 'an error is printed' do
+      fixed_time = '2016-12-01'
+      various_todos = <<-EOF
+        (A) Important email +read
+        That long article @personal +read
+        x 2016-11-30 2016-11-30 Buy milk @personal
+        (B) {2016.11.29} Play guitar @personal
+        2016-11-26 Make phone call @personal
+      EOF
+
+      with_fixed_time_and_todo_file(fixed_time, various_todos) do |_, env_extension|
+        executable = Executable.run('mv 10 today', env_extension: env_extension)
+
+        expect(executable.exit_code).not_to eq(0)
+        expect(executable.error).to match(/ID.+10/)
+      end
+    end
+  end
+
   context 'TODO is completed' do
     specify 'TODO has its MIT date replaced' do
       fixed_time = '2016-12-01'
