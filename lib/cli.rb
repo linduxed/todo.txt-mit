@@ -19,7 +19,8 @@ class CLI
       $stdout.puts version_message
       exit 0
     when ARGV[1].nil?
-      $stdout.puts all_mits_listing
+      message = MITListPrinter.new(ENV['TODO_FILE']).all_mits
+      $stdout.puts message
       exit 0
     when ARGV[1] == 'add'
       message = TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
@@ -101,15 +102,5 @@ class CLI
 
   def version_message
     "mit (ruby) #{Constants::VERSION}"
-  end
-
-  def all_mits_listing
-    mits = TodoFileParser.new(ENV['TODO_FILE']).mits
-
-    if mits.empty?
-      'No MITs found.'
-    else
-      MITListFormatter.new(mits).grouped_by_date
-    end
   end
 end
