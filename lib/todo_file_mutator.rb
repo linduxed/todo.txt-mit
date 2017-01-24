@@ -3,6 +3,7 @@ require_relative 'date_parser'
 
 class BadDateError < StandardError; end
 class BadTaskIDError < StandardError; end
+class MITDateMissingError < StandardError; end
 
 class TodoFileMutator
   def initialize(todo_file_path)
@@ -46,6 +47,22 @@ class TodoFileMutator
     overwrite_todo_file(all_tasks)
 
     "TODO: '#{task.chomp}' moved to #{parsed_date}"
+  end
+
+  def remove_mit_date(task_id:)
+    all_tasks = File.readlines(@todo_file_path)
+    task = maybe_find_task(task_id, all_tasks)
+    raise(BadTaskIDError, "No task for ID: #{task_id}") unless task
+
+    unless already_has_mit_date?(task)
+      raise(MITDateMissingError, "Task #{task_id} is not a MIT: '#{task.chomp}'")
+    end
+
+    changed_task = task.gsub(/#{Constants::MIT_DATE_REGEX} /, '')
+    all_tasks[task_id.to_i - 1] = changed_task
+    overwrite_todo_file(all_tasks)
+
+    "TODO: Removed MIT date from '#{changed_task}'"
   end
 
   private

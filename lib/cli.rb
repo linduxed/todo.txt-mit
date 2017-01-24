@@ -36,10 +36,16 @@ class CLI
       )
       $stdout.puts message
       exit 0
+    when ARGV[1] == 'rm'
+      message = TodoFileMutator.new(ENV['TODO_FILE']).remove_mit_date(
+        task_id: ARGV[2],
+      )
+      $stdout.puts message
+      exit 0
     else
       fail BadActionError
     end
-  rescue BadDateError, BadTaskIDError => e
+  rescue BadDateError, BadTaskIDError, MITDateMissingError => e
     $stderr.puts "MIT: #{e.message}"
     exit EX_USAGE
   rescue BadActionError
@@ -74,6 +80,9 @@ class CLI
 
         mit
           List all MITs with default formatting.
+
+        mit rm ID
+          Convert the MIT identified by ID to a standard task.
 
         mit DATE|DAY task
           DATE must be in the format of YYYY.MM.DD.
