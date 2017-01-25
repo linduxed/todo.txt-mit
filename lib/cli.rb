@@ -87,7 +87,8 @@ class CLI
         Displays Most Important Tasks (MIT) in todo.txt file, adds new ones or
         turns MIT tasks into standard ones.
 
-        mit [-h|--help|-v|--version] [date|day task] [rm ID] [mv ID DATE|DAY]
+        mit [-h|--help|-v|--version] [date|day task] [rm ID]
+          [not @context|@context] [mv ID DATE|DAY]
 
         -h, --help      Displays help message.
         -v, --version   Displays version information.
@@ -97,6 +98,9 @@ class CLI
 
         mit rm ID
           Convert the MIT identified by ID to a standard task.
+
+        mit not @context|@context
+          Displays all MIT's not in or in specified context.
 
         mit DATE|DAY task
           DATE must be in the format of YYYY.MM.DD.
