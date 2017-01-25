@@ -16,7 +16,7 @@ describe 'Adding MITs' do
         mit_date = '2016.12.05'
 
         executable = Executable.run(
-          "add #{mit_date} \"Run errand @work\"",
+          "#{mit_date} \"Run errand @work\"",
           env_extension: env_extension
         )
 
@@ -52,7 +52,7 @@ describe 'Adding MITs' do
 
       with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
         executable = Executable.run(
-          'add today "Run errand @work"',
+          'today "Run errand @work"',
           env_extension: env_extension
         )
 
@@ -86,7 +86,7 @@ describe 'Adding MITs' do
 
       with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
         executable = Executable.run(
-          'add tomorrow "Run errand @work"',
+          'tomorrow "Run errand @work"',
           env_extension: env_extension
         )
 
@@ -136,7 +136,7 @@ describe 'Adding MITs' do
 
           with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
             executable = Executable.run(
-              "add #{weekday} \"Run errand @work\"",
+              "#{weekday} \"Run errand @work\"",
               env_extension: env_extension
             )
 
@@ -171,7 +171,7 @@ describe 'Adding MITs' do
 
       with_fixed_time_and_todo_file(fixed_time, various_todos) do |todo_file, env_extension|
         executable = Executable.run(
-          'add ToDaY "Run errand @work"',
+          'ToDaY "Run errand @work"',
           env_extension: env_extension
         )
 
@@ -202,7 +202,7 @@ describe 'Adding MITs' do
           env_extension.merge!('TODOTXT_DATE_ON_ADD' => '1')
 
           executable = Executable.run(
-            "add #{mit_date} \"Run errand @work\"",
+            "#{mit_date} \"Run errand @work\"",
             env_extension: env_extension
           )
 
@@ -229,7 +229,7 @@ describe 'Adding MITs' do
           mit_date = '2016.12.05'
 
           executable = Executable.run(
-            "add #{mit_date} \"Run errand @work\"",
+            "#{mit_date} \"Run errand @work\"",
             env_extension: env_extension
           )
 
