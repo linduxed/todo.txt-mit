@@ -22,6 +22,18 @@ class CLI
       listing = MITListPrinter.new(ENV['TODO_FILE']).all_mits
       $stdout.puts listing
       exit 0
+    when ARGV[1].match(/@\w+/)
+      listing = MITListPrinter.new(ENV['TODO_FILE']).mits_with_context(
+        context: ARGV[1]
+      )
+      $stdout.puts listing
+      exit 0
+    when ARGV[1] == 'not' && ARGV[2].match(/@\w+/)
+      listing = MITListPrinter.new(ENV['TODO_FILE']).mits_without_context(
+        context: ARGV[2]
+      )
+      $stdout.puts listing
+      exit 0
     when ARGV[1] == 'add'
       message = TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
         date: ARGV[2],
