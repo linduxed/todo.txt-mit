@@ -6,13 +6,30 @@ class MITListPrinter
   end
 
   def all_mits
-    mits_from_file = TodoFileParser.new(@todo_file_path).mits
     return 'No MITs found.' if mits_from_file.empty?
 
     grouped_by_date(mits_from_file)
   end
 
+  def mits_with_context(context:)
+    context_mits = mits_from_file.select { |mit| mit.context?(context) }
+    return 'No MITs found.' if context_mits.empty?
+
+    grouped_by_date(context_mits)
+  end
+
+  def mits_without_context(context:)
+    not_context_mits = mits_from_file.reject { |mit| mit.context?(context) }
+    return 'No MITs found.' if not_context_mits.empty?
+
+    grouped_by_date(not_context_mits)
+  end
+
   private
+
+  def mits_from_file
+    @mits_from_file ||= TodoFileParser.new(@todo_file_path).mits
+  end
 
   def grouped_by_date(mits)
     output_lines = []

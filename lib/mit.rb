@@ -16,6 +16,10 @@ class MIT
     date < Constants::TODAY
   end
 
+  def context?(context)
+    @todo.match(/#{context}/)
+  end
+
   private
 
   def task
