@@ -62,7 +62,7 @@ class TodoFileMutator
     all_tasks[task_id.to_i - 1] = changed_task
     overwrite_todo_file(all_tasks)
 
-    "TODO: Removed MIT date from '#{changed_task}'"
+    "TODO: Removed MIT date from '#{changed_task.chomp}'"
   end
 
   private
