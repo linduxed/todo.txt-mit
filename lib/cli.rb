@@ -19,8 +19,8 @@ class CLI
       $stdout.puts version_message
       exit 0
     when ARGV[1].nil?
-      message = MITListPrinter.new(ENV['TODO_FILE']).all_mits
-      $stdout.puts message
+      listing = MITListPrinter.new(ENV['TODO_FILE']).all_mits
+      $stdout.puts listing
       exit 0
     when ARGV[1] == 'add'
       message = TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
