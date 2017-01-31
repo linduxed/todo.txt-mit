@@ -4,6 +4,8 @@ This is a reimplementation of the [MIT add-on](https://github.com/codybuell/mit)
 
 The main reason for this reimplementation's existence is that I agree with the original author that [it would be nice if the add-on was faster](https://github.com/codybuell/mit/blob/d4fbdd203f04098ff8cfcd39a6fa8bb3226b6b03/mit#L49).
 
+Apart from the functionality provided in the original addon, this version adds the ability to input relative dates instead of weekday names or absolute dates.
+
 ## Installation
 
 Start by cloning this repo.

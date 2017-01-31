@@ -87,8 +87,8 @@ class CLI
         Displays Most Important Tasks (MIT) in todo.txt file, adds new ones or
         turns MIT tasks into standard ones.
 
-        mit [-h|--help|-v|--version] [date|day task] [rm ID]
-          [not @context|@context] [mv ID DATE|DAY]
+        mit [-h|--help|-v|--version] [date|day|relativedate task] [rm ID]
+          [not @context|@context] [mv ID DATE|DAY|RELATIVEDATE]
 
         -h, --help      Displays help message.
         -v, --version   Displays version information.
@@ -102,14 +102,18 @@ class CLI
         mit not @context|@context
           Displays all MIT's not in or in specified context.
 
-        mit DATE|DAY task
+        mit DATE|DAY|RELATIVEDATE task
           DATE must be in the format of YYYY.MM.DD.
           DAY can be full or short day names, today or tomorrow.
+          RELATIVEDATE is defined as an integer, followed by one of the letters
+          "d", "w" or "m" (days, weeks and months).
 
-        mit mv ID DATE|DAY
+        mit mv ID DATE|DAY|RELATIVEDATE
           Move the MIT identified by ID to a new day.
           DATE must be in the format of YYYY.MM.DD.
           DAY can be full or short day names, today or tomorrow.
+          RELATIVEDATE is defined as an integer, followed by one of the letters
+          "d", "w" or "m" (days, weeks and months).
     EOF
 
     # Remove leading indentation

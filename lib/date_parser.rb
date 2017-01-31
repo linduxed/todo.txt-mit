@@ -6,7 +6,10 @@ class DateParser
   end
 
   def parse
-    maybe_fixed_date || maybe_weekday || maybe_constraint_free_parse
+    maybe_fixed_date ||
+      maybe_weekday ||
+      maybe_relative_date ||
+      maybe_constraint_free_parse
   end
 
   private
@@ -46,6 +49,22 @@ class DateParser
 
     from_tomorrow_to_one_week_from_now.find do |day|
       day.cwday == weekday_name_to_cwday[@date_string]
+    end
+  end
+
+  def maybe_relative_date
+    matches = @date_string.downcase.match(/\A(\d+)([dwm])\z/i)
+    return nil if matches.nil?
+
+    number, time_period = matches[1].to_i, matches[2]
+
+    case time_period
+    when 'd'
+      Constants::TODAY + number
+    when 'w'
+      Constants::TODAY + (7 * number)
+    when 'm'
+      Constants::TODAY >> number
     end
   end
 

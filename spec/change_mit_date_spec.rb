@@ -63,6 +63,47 @@ describe 'Changing the MIT date of a TODO' do
     end
   end
 
+  describe 'with the format `todo.sh mit mv RELATIVE_DATE "foobar"`' do
+    {
+      '1d' => '2016.12.02',
+      '3d' => '2016.12.04',
+      '10d' => '2016.12.11',
+      '40d' => '2017.01.10',
+      '1w' => '2016.12.08',
+      '5w' => '2017.01.05',
+      '1m' => '2017.01.01',
+      '3m' => '2017.03.01',
+    }.each do |relative_date, mit_date|
+      specify "a MIT is moved to RELATIVE_DATE \"#{relative_date}\"" do
+        various_todos = <<-EOF
+          (A) Important email +read
+          That long article @personal +read
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          (B) {2016.11.29} Play guitar @personal
+          2016-11-26 Make phone call @personal
+        EOF
+        original_todo_count = various_todos.split("\n").count
+
+        with_fixed_time_and_todo_file('2016-12-01', various_todos) do |todo_file, env_extension|
+          executable = Executable.run(
+            "mv 4 #{relative_date}",
+            env_extension: env_extension
+          )
+
+          expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+          expect(executable.exit_code).to eq(0)
+          expect(executable.lines).to include(
+            /TODO:.+Play guitar.+moved to.+#{mit_date.tr('.', '-')}/
+          )
+          todo_file_lines = File.readlines(todo_file.path)
+          expect(todo_file_lines[3]).to match(
+            /^\(B\) {#{mit_date}} Play guitar @personal$/
+          )
+        end
+      end
+    end
+  end
+
   context 'a bad date is provided' do
     specify 'an error is printed' do
       fixed_time = '2016-12-01'
