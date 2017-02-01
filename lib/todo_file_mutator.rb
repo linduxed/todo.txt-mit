@@ -15,12 +15,7 @@ class TodoFileMutator
     raise(BadDateError, "\"#{date}\" is not a valid date.") unless parsed_date
     mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
 
-    optional_creation_date =
-      if include_creation_date
-        "#{Constants::TODAY} "
-      else
-        ''
-      end
+    optional_creation_date = include_creation_date ? "#{Constants::TODAY} " : ''
     mit = "#{optional_creation_date}#{mit_date} #{task}"
 
     write_mit_at_end_of_todo_file(mit)
