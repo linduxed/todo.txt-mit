@@ -20,7 +20,8 @@ class TodoFileMutator
 
     write_mit_at_end_of_todo_file(mit)
 
-    "#{mit}\nTODO: #{number_of_todos_in_todo_file} added."
+    id_of_added_todo = number_of_todos_in_todo_file
+    "#{mit}\nTODO: #{id_of_added_todo} added."
   end
 
   def move_or_make_mit(task_id:, date:)
