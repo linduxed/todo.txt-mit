@@ -36,20 +36,20 @@ class CLI
       exit 0
     when ARGV[1] == 'mv'
       message = TodoFileMutator.new(ENV['TODO_FILE']).move_or_make_mit(
-        task_id: ARGV[2],
-        date: ARGV[3],
+        task_id_string: ARGV[2],
+        date_string: ARGV[3],
       )
       $stdout.puts message
       exit 0
     when ARGV[1] == 'rm'
       message = TodoFileMutator.new(ENV['TODO_FILE']).remove_mit_date(
-        task_id: ARGV[2],
+        task_id_string: ARGV[2],
       )
       $stdout.puts message
       exit 0
     when !ARGV[1].nil? && !ARGV[2].nil?
       message = TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
-        date: ARGV[1],
+        date_string: ARGV[1],
         task: ARGV[2],
         include_creation_date: ENV['TODOTXT_DATE_ON_ADD'],
       )

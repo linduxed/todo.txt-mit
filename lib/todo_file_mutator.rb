@@ -10,9 +10,9 @@ class TodoFileMutator
     @todo_file_path = todo_file_path
   end
 
-  def add_mit(date:, task:, include_creation_date:)
-    parsed_date = DateParser.new(date).parse
-    raise(BadDateError, "\"#{date}\" is not a valid date.") unless parsed_date
+  def add_mit(date_string:, task:, include_creation_date:)
+    parsed_date = DateParser.new(date_string).parse
+    raise(BadDateError, "\"#{date_string}\" is not a valid date.") unless parsed_date
     mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
 
     optional_creation_date = include_creation_date ? "#{Constants::TODAY} " : ''
@@ -24,22 +24,26 @@ class TodoFileMutator
     "#{mit}\nTODO: #{id_of_added_todo} added."
   end
 
-  def move_or_make_mit(task_id:, date:)
+  def move_or_make_mit(task_id_string:, date_string:)
     all_tasks = File.readlines(@todo_file_path)
-    task = maybe_find_task(task_id, all_tasks)
-    raise(BadTaskIDError, "No task for ID: #{task_id}") unless task
+    if valid_task_id?(task_id_string, all_tasks)
+      task_id = task_id_string.to_i
+    else
+      raise(BadTaskIDError, "No task for ID: #{task_id_string}")
+    end
 
-    parsed_date = DateParser.new(date).parse
-    raise(BadDateError, "\"#{date}\" is not a valid date.") unless parsed_date
+    parsed_date = DateParser.new(date_string).parse
+    raise(BadDateError, "\"#{date_string}\" is not a valid date.") unless parsed_date
     mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
 
+    task = all_tasks[task_id - 1]
     changed_task =
       if already_has_mit_date?(task)
         change_mit_date(task, mit_date)
       else
         add_mit_date(task, mit_date)
       end
-    all_tasks[task_id.to_i - 1] = changed_task
+    all_tasks[task_id - 1] = changed_task
     overwrite_todo_file(all_tasks)
 
     formatted_date = DateFormatter.new(parsed_date).format(
@@ -49,17 +53,21 @@ class TodoFileMutator
     "TODO: '#{task.chomp}' moved to #{formatted_date}"
   end
 
-  def remove_mit_date(task_id:)
+  def remove_mit_date(task_id_string:)
     all_tasks = File.readlines(@todo_file_path)
-    task = maybe_find_task(task_id, all_tasks)
-    raise(BadTaskIDError, "No task for ID: #{task_id}") unless task
+    if valid_task_id?(task_id_string, all_tasks)
+      task_id = task_id_string.to_i
+    else
+      raise(BadTaskIDError, "No task for ID: #{task_id_string}")
+    end
 
+    task = all_tasks[task_id - 1]
     unless already_has_mit_date?(task)
-      raise(MITDateMissingError, "Task #{task_id} is not a MIT: '#{task.chomp}'")
+      raise(MITDateMissingError, "Task #{task_id_string} is not a MIT: '#{task.chomp}'")
     end
 
     changed_task = task.gsub(/#{Constants::MIT_DATE_REGEX} /, '')
-    all_tasks[task_id.to_i - 1] = changed_task
+    all_tasks[task_id - 1] = changed_task
     overwrite_todo_file(all_tasks)
 
     "TODO: Removed MIT date from '#{changed_task.chomp}'"
@@ -79,13 +87,13 @@ class TodoFileMutator
     task.match(Constants::MIT_DATE_REGEX)
   end
 
-  def maybe_find_task(task_id, tasks)
-    id = task_id.to_i # Note: String#to_i on non-numbers returns 0.
+  def valid_task_id?(task_id_string, tasks)
+    id = task_id_string.to_i # Note: String#to_i on non-numbers returns 0.
 
-    return nil if id <= 0
-    return nil if tasks.count < id
+    return false if id <= 0
+    return false if tasks.count < id
 
-    tasks[id - 1]
+    true
   end
 
   def add_mit_date(task, mit_date)
