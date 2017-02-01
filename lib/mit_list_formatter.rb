@@ -48,7 +48,10 @@ class MITListPrinter
     sorted_dates.each do |date|
       mits_for_date = mits_today_or_in_future[date]
 
-      output_lines << DateFormatter.new(date).format
+      output_lines << DateFormatter.new(date).format(
+        with_trailing_colon: true,
+        capitalize: true,
+      )
       mits_for_date.each do |mit|
         output_lines << "  #{mit}"
       end

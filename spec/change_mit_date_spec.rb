@@ -22,7 +22,7 @@ describe 'Changing the MIT date of a TODO' do
         expect(executable.error).to be_empty, "Error:\n#{executable.error}"
         expect(executable.exit_code).to eq(0)
         expect(executable.lines).to include(
-          /TODO:.+Play guitar.+moved to.+2016.12.02/
+          /TODO:.+Play guitar.+moved to tomorrow.*/
         )
         todo_file_lines = File.readlines(todo_file.path)
         expect(todo_file_lines[3]).to match(
@@ -53,7 +53,7 @@ describe 'Changing the MIT date of a TODO' do
         expect(executable.error).to be_empty, "Error:\n#{executable.error}"
         expect(executable.exit_code).to eq(0)
         expect(executable.lines).to include(
-          /TODO:.+Play guitar.+moved to.+2016.12.03/
+          /TODO:.+Play guitar.+moved to Saturday.*/
         )
         todo_file_lines = File.readlines(todo_file.path)
         expect(todo_file_lines[3]).to match(
@@ -92,9 +92,7 @@ describe 'Changing the MIT date of a TODO' do
 
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
           expect(executable.exit_code).to eq(0)
-          expect(executable.lines).to include(
-            /TODO:.+Play guitar.+moved to.+#{mit_date.tr('.', '-')}/
-          )
+          expect(executable.lines).to include(/TODO:.+Play guitar.+moved to .+/)
           todo_file_lines = File.readlines(todo_file.path)
           expect(todo_file_lines[3]).to match(
             /^\(B\) {#{mit_date}} Play guitar @personal$/
@@ -164,7 +162,7 @@ describe 'Changing the MIT date of a TODO' do
         expect(executable.error).to be_empty, "Error:\n#{executable.error}"
         expect(executable.exit_code).to eq(0)
         expect(executable.lines).to include(
-          /TODO:.+That long article.+moved to.+2016.12.02/
+          /TODO:.+That long article.+moved to tomorrow.*/
         )
         todo_file_lines = File.readlines(todo_file.path)
         expect(todo_file_lines[1]).to match(

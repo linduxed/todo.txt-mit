@@ -3,24 +3,31 @@ class DateFormatter
     @date = date
   end
 
-  def format
-    raise(StandardError, 'Cannot format date prior to today') if @date < Constants::TODAY
+  def format(with_trailing_colon:, capitalize:)
+    formatted_date =
+      case
+      when in_the_past?
+        @date.to_s
+      when today?
+        capitalize ? 'Today' : 'today'
+      when tomorrow?
+        "#{capitalize ? 'Tomorrow' : 'tomorrow'}, #{weekday}"
+      when within_seven_days?
+        weekday
+      when next_week?
+        "#{weekday}, next week, #{@date}"
+      else
+        "#{weekday}, #{number_of_weeks_from_now} weeks from now, #{@date}"
+      end
 
-    case
-    when today?
-      'Today:'
-    when tomorrow?
-      "Tomorrow, #{weekday}:"
-    when within_seven_days?
-      "#{weekday}:"
-    when next_week?
-      "#{weekday}, next week, #{@date}:"
-    else
-      "#{weekday}, #{number_of_weeks_from_now} weeks from now, #{@date}:"
-    end
+    with_trailing_colon ? "#{formatted_date}:" : formatted_date
   end
 
   private
+
+  def in_the_past?
+    @date < Constants::TODAY
+  end
 
   def today?
     @date == Constants::TODAY

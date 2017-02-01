@@ -46,7 +46,11 @@ class TodoFileMutator
     all_tasks[task_id.to_i - 1] = changed_task
     overwrite_todo_file(all_tasks)
 
-    "TODO: '#{task.chomp}' moved to #{parsed_date}"
+    formatted_date = DateFormatter.new(parsed_date).format(
+      with_trailing_colon: false,
+      capitalize: false,
+    )
+    "TODO: '#{task.chomp}' moved to #{formatted_date}"
   end
 
   def remove_mit_date(task_id:)

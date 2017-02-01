@@ -24,7 +24,7 @@ describe 'Adding a MIT date to a TODO' do
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
             expect(executable.exit_code).to eq(0)
             expect(executable.lines).to include(
-              /TODO:.+Make phone call.+moved to.+2016.12.02/
+              /TODO:.+Make phone call.+moved to tomorrow.*/
             )
             todo_file_lines = File.readlines(todo_file.path)
             expect(todo_file_lines[4]).to match(
@@ -55,7 +55,7 @@ describe 'Adding a MIT date to a TODO' do
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
             expect(executable.exit_code).to eq(0)
             expect(executable.lines).to include(
-              /TODO:.+Throw out trash.+moved to.+2016.12.02/
+              /TODO:.+Throw out trash.+moved to tomorrow.*/
             )
             todo_file_lines = File.readlines(todo_file.path)
             expect(todo_file_lines[4]).to match(
@@ -88,7 +88,7 @@ describe 'Adding a MIT date to a TODO' do
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
             expect(executable.exit_code).to eq(0)
             expect(executable.lines).to include(
-              /TODO:.+That long article.+moved to.+2016.12.02/
+              /TODO:.+That long article.+moved to tomorrow.+/
             )
             todo_file_lines = File.readlines(todo_file.path)
             expect(todo_file_lines[1]).to match(
@@ -119,7 +119,7 @@ describe 'Adding a MIT date to a TODO' do
             expect(executable.error).to be_empty, "Error:\n#{executable.error}"
             expect(executable.exit_code).to eq(0)
             expect(executable.lines).to include(
-              /TODO:.+Important email.+moved to.+2016.12.02/
+              /TODO:.+Important email.+moved to tomorrow.*/
             )
             todo_file_lines = File.readlines(todo_file.path)
             expect(todo_file_lines[0]).to match(
@@ -152,7 +152,7 @@ describe 'Adding a MIT date to a TODO' do
         expect(executable.error).to be_empty, "Error:\n#{executable.error}"
         expect(executable.exit_code).to eq(0)
         expect(executable.lines).to include(
-          /TODO:.+That long article.+moved to.+2016.12.03/
+          /TODO:.+That long article.+moved to Saturday.*/
         )
         todo_file_lines = File.readlines(todo_file.path)
         expect(todo_file_lines[1]).to match(
@@ -183,7 +183,7 @@ describe 'Adding a MIT date to a TODO' do
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
           expect(executable.exit_code).to eq(0)
           expect(executable.lines).to include(
-            /TODO:.+That long article.+moved to.+2016.12.02/
+            /TODO:.+That long article.+moved to tomorrow.*/
           )
           todo_file_lines = File.readlines(todo_file.path)
           expect(todo_file_lines[1]).to match(
@@ -213,7 +213,7 @@ describe 'Adding a MIT date to a TODO' do
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
           expect(executable.exit_code).to eq(0)
           expect(executable.lines).to include(
-            /TODO:.+That long article.+moved to.+2016.12.02/
+            /TODO:.+That long article.+moved to tomorrow.*/
           )
           todo_file_lines = File.readlines(todo_file.path)
           expect(todo_file_lines[1]).to match(
@@ -243,7 +243,7 @@ describe 'Adding a MIT date to a TODO' do
           expect(executable.error).to be_empty, "Error:\n#{executable.error}"
           expect(executable.exit_code).to eq(0)
           expect(executable.lines).to include(
-            /TODO:.+That long article.+moved to.+2016.12.02/
+            /TODO:.+That long article.+moved to tomorrow.*/
           )
           todo_file_lines = File.readlines(todo_file.path)
           expect(todo_file_lines[1]).to match(
