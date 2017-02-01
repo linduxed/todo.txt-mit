@@ -8,56 +8,45 @@ class CLI
   EX_USAGE = 64
 
   def run
-    case
-    when usage_requested_from_todo_help?
-      $stdout.puts usage_message
-      exit 0
-    when %w(usage -h --help).include?(ARGV[1])
-      $stdout.puts usage_message
-      exit 0
-    when %w(-v --version).include?(ARGV[1])
-      $stdout.puts version_message
-      exit 0
-    when ARGV[1].nil?
-      listing = MITListPrinter.new(ENV['TODO_FILE']).all_mits
-      $stdout.puts listing
-      exit 0
-    when ARGV[1].match(/@\w+/)
-      listing = MITListPrinter.new(ENV['TODO_FILE']).mits_with_context(
-        context: ARGV[1]
-      )
-      $stdout.puts listing
-      exit 0
-    when ARGV[1] == 'not' && ARGV[2].match(/@\w+/)
-      listing = MITListPrinter.new(ENV['TODO_FILE']).mits_without_context(
-        context: ARGV[2]
-      )
-      $stdout.puts listing
-      exit 0
-    when ARGV[1] == 'mv'
-      message = TodoFileMutator.new(ENV['TODO_FILE']).move_or_make_mit(
-        task_id_string: ARGV[2],
-        date_string: ARGV[3],
-      )
-      $stdout.puts message
-      exit 0
-    when ARGV[1] == 'rm'
-      message = TodoFileMutator.new(ENV['TODO_FILE']).remove_mit_date(
-        task_id_string: ARGV[2],
-      )
-      $stdout.puts message
-      exit 0
-    when !ARGV[1].nil? && !ARGV[2].nil?
-      message = TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
-        date_string: ARGV[1],
-        task: ARGV[2],
-        include_creation_date: ENV['TODOTXT_DATE_ON_ADD'],
-      )
-      $stdout.puts message
-      exit 0
-    else
-      fail BadActionError
-    end
+    output =
+      case
+      when usage_requested_from_todo_help?
+        usage_message
+      when %w(usage -h --help).include?(ARGV[1])
+        usage_message
+      when %w(-v --version).include?(ARGV[1])
+        version_message
+      when ARGV[1].nil?
+        MITListPrinter.new(ENV['TODO_FILE']).all_mits
+      when ARGV[1].match(/@\w+/)
+        MITListPrinter.new(ENV['TODO_FILE']).mits_with_context(
+          context: ARGV[1]
+        )
+      when ARGV[1] == 'not' && ARGV[2].match(/@\w+/)
+        MITListPrinter.new(ENV['TODO_FILE']).mits_without_context(
+          context: ARGV[2]
+        )
+      when ARGV[1] == 'mv'
+        TodoFileMutator.new(ENV['TODO_FILE']).move_or_make_mit(
+          task_id_string: ARGV[2],
+          date_string: ARGV[3],
+        )
+      when ARGV[1] == 'rm'
+        TodoFileMutator.new(ENV['TODO_FILE']).remove_mit_date(
+          task_id_string: ARGV[2],
+        )
+      when !ARGV[1].nil? && !ARGV[2].nil?
+        TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
+          date_string: ARGV[1],
+          task: ARGV[2],
+          include_creation_date: ENV['TODOTXT_DATE_ON_ADD'],
+        )
+      else
+        fail BadActionError
+      end
+
+    $stdout.puts output
+    exit 0
   rescue BadDateError, BadTaskIDError, MITDateMissingError => e
     $stderr.puts "MIT: #{e.message}"
     exit EX_USAGE
