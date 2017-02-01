@@ -13,7 +13,7 @@ class TodoFileMutator
   def add_mit(date:, task:, include_creation_date:)
     parsed_date = DateParser.new(date).parse
     raise(BadDateError, "\"#{date}\" is not a valid date.") unless parsed_date
-    mit_date = parsed_date.strftime('%Y.%m.%d')
+    mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
 
     optional_creation_date =
       if include_creation_date
@@ -21,7 +21,7 @@ class TodoFileMutator
       else
         ''
       end
-    mit = "#{optional_creation_date}{#{mit_date}} #{task}"
+    mit = "#{optional_creation_date}#{mit_date} #{task}"
 
     write_mit_at_end_of_todo_file(mit)
 
