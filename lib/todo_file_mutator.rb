@@ -14,7 +14,7 @@ class TodoFileMutator
 
   def add_mit(date_string:, task:, include_creation_date:)
     parsed_date = DateParser.new(date_string).parse
-    raise(BadDateError, "\"#{date_string}\" is not a valid date.") unless parsed_date
+    parsed_date or raise(BadDateError, "\"#{date_string}\" is not a valid date.")
     mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
 
     optional_creation_date = include_creation_date ? "#{Constants::TODAY} " : ''
@@ -34,9 +34,9 @@ class TodoFileMutator
       raise(BadTaskIDError, "No task for ID: #{task_id_string}")
     end
 
-    raise(MissingDateError, 'date argument is missing.') unless date_string
+    date_string or raise(MissingDateError, 'date argument is missing.')
     parsed_date = DateParser.new(date_string).parse
-    raise(BadDateError, "\"#{date_string}\" is not a valid date.") unless parsed_date
+    parsed_date or raise(BadDateError, "\"#{date_string}\" is not a valid date.")
     mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
 
     task = all_tasks[task_id - 1]
