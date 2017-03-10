@@ -4,6 +4,7 @@ require_relative 'date_parser'
 class BadDateError < StandardError; end
 class BadTaskIDError < StandardError; end
 class MITDateMissingError < StandardError; end
+class MissingDateError < StandardError; end
 
 class TodoFileMutator
   def initialize(todo_file_path)
@@ -32,6 +33,7 @@ class TodoFileMutator
       raise(BadTaskIDError, "No task for ID: #{task_id_string}")
     end
 
+    raise(MissingDateError, 'date argument is missing.') unless date_string
     parsed_date = DateParser.new(date_string).parse
     raise(BadDateError, "\"#{date_string}\" is not a valid date.") unless parsed_date
     mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
