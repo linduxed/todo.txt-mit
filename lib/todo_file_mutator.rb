@@ -5,6 +5,7 @@ class BadDateError < StandardError; end
 class BadTaskIDError < StandardError; end
 class MITDateMissingError < StandardError; end
 class MissingDateError < StandardError; end
+class MissingTaskIDError < StandardError; end
 
 class TodoFileMutator
   def initialize(todo_file_path)
@@ -56,6 +57,8 @@ class TodoFileMutator
   end
 
   def remove_mit_date(task_id_string:)
+    task_id_string or raise(MissingTaskIDError, 'missing task ID.')
+
     all_tasks = File.readlines(@todo_file_path)
     if valid_task_id?(task_id_string, all_tasks)
       task_id = task_id_string.to_i

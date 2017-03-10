@@ -22,6 +22,21 @@ describe 'Remove MIT date from a TODO' do
       end
     end
 
+    context 'no task ID is provided' do
+      specify 'an error message is printed' do
+        single_todo = <<-EOF
+          (A) Important email +read
+        EOF
+
+        with_fixed_time_and_todo_file('2016-12-01', single_todo) do |_, env_extension|
+          executable = Executable.run('rm', env_extension: env_extension)
+
+          expect(executable.exit_code).not_to eq(0)
+          expect(executable.error).to match(/missing.+ID/)
+        end
+      end
+    end
+
     context 'bad task ID is provided' do
       specify 'an error message is printed' do
         single_todo = <<-EOF

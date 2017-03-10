@@ -47,7 +47,8 @@ class CLI
 
     $stdout.puts output
     exit 0
-  rescue BadDateError, BadTaskIDError, MITDateMissingError, MissingDateError => e
+  rescue BadDateError, BadTaskIDError, MITDateMissingError,
+         MissingDateError, MissingTaskIDError => e
     $stderr.puts "MIT: #{e.message}"
     exit EX_USAGE
   rescue BadActionError
