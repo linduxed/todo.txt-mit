@@ -93,6 +93,7 @@ class CLI
           Displays all MIT's not in or in specified context.
 
         mit DATE|DAY|RELATIVEDATE task
+          Add MIT for chosen date.
           DATE must be in the format of YYYY.MM.DD.
           DAY can be full or short day names, today or tomorrow.
           RELATIVEDATE is defined as an integer, followed by one of the letters
