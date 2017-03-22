@@ -231,6 +231,47 @@ describe 'Adding MITs' do
     end
   end
 
+  describe 'with the format `todo.sh mit FREEFORM_DATE "foobar"`' do
+    {
+      '2010/03/22' => '2010.03.22',
+      '22/03/2010' => '2010.03.22',
+      '22-03-2010' => '2010.03.22',
+      '14th' => /\d{4}\.\d{2}\.14/,
+    }.each do |freeform_date, mit_date|
+      specify "a MIT is added with FREEFORM_DATE \"#{freeform_date}\"" do
+        various_todos = <<-EOF
+          (A) Important email +read
+          That long article @personal +read
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          (B) {2016.11.29} Play guitar @personal
+          2016-11-26 Make phone call @personal
+        EOF
+        original_todo_count = various_todos.split("\n").count
+
+        with_fixed_time_and_todo_file('2016-12-01', various_todos) do |todo_file, env_extension|
+          executable = Executable.run(
+            "#{freeform_date} \"foo @bar +baz\"",
+            env_extension: env_extension
+          )
+
+          expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+          expect(executable.exit_code).to eq(0)
+          expect(executable.lines).to include(
+            /\A{#{mit_date}} foo @bar \+baz\z/
+          )
+          expect(executable.lines).to include(
+            "TODO: #{original_todo_count + 1} added."
+          )
+          todo_file_lines = File.readlines(todo_file.path)
+          expect(todo_file_lines.last).to match(
+            /^{#{mit_date}} foo @bar \+baz$/
+          )
+          expect(todo_file_lines.count).to eq(original_todo_count + 1)
+        end
+      end
+    end
+  end
+
   describe 'automated addition of creation date to MITs' do
     context 'ENV["TODOTXT_DATE_ON_ADD"] is set' do
       specify 'a MIT with a creation date is added to the TODO_FILE' do

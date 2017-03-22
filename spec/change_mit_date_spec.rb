@@ -122,6 +122,39 @@ describe 'Changing the MIT date of a TODO' do
     end
   end
 
+  describe 'with the format `todo.sh mit mv 123 FREEFORM_DATE' do
+    {
+      '2010/03/22' => '2010.03.22',
+      '22/03/2010' => '2010.03.22',
+      '22-03-2010' => '2010.03.22',
+    }.each do |freeform_date, mit_date|
+      specify "a MIT is moved to FREEFORM_DATE \"#{freeform_date}\"" do
+        various_todos = <<-EOF
+          (A) Important email +read
+          That long article @personal +read
+          x 2016-11-30 2016-11-30 Buy milk @personal
+          (B) {2016.11.29} Play guitar @personal
+          2016-11-26 Make phone call @personal
+        EOF
+
+        with_fixed_time_and_todo_file('2016-12-01', various_todos) do |todo_file, env_extension|
+          executable = Executable.run(
+            "mv 4 '#{freeform_date}'",
+            env_extension: env_extension
+          )
+
+          expect(executable.error).to be_empty, "Error:\n#{executable.error}"
+          expect(executable.exit_code).to eq(0)
+          expect(executable.lines).to include(/TODO:.+Play guitar.+moved to .+/)
+          todo_file_lines = File.readlines(todo_file.path)
+          expect(todo_file_lines[3]).to match(
+            /^\(B\) {#{mit_date}} Play guitar @personal$/
+          )
+        end
+      end
+    end
+  end
+
   context 'a bad date is provided' do
     specify 'an error is printed' do
       fixed_time = '2016-12-01'

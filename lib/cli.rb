@@ -78,7 +78,7 @@ class CLI
         turns MIT tasks into standard ones.
 
         mit [-h|--help|-v|--version] [date|day|relativedate task] [rm ID]
-          [not @context|@context] [mv ID DATE|DAY|RELATIVEDATE]
+          [not @context|@context] [mv ID DATE|DAY|RELATIVEDATE|FREEFORMDATE]
 
         -h, --help      Displays help message.
         -v, --version   Displays version information.
@@ -89,6 +89,8 @@ class CLI
         DAY can be full or short day names, today or tomorrow.
         RELATIVEDATE is defined as an integer, followed by one of the letters
         "d", "w" or "m" (days, weeks and months).
+        FREEFORMDATE is any string that resembles a date; an attempt will be
+        made to parse it. FREEFORMDATE is the last date format checked.
 
         Sub-commands:
 
@@ -101,10 +103,10 @@ class CLI
         mit not @context|@context
           Displays all MIT's not in or in specified context.
 
-        mit DATE|DAY|RELATIVEDATE task
+        mit DATE|DAY|RELATIVEDATE|FREEFORMDATE task
           Add MIT for chosen date.
 
-        mit mv ID DATE|DAY|RELATIVEDATE
+        mit mv ID DATE|DAY|RELATIVEDATE|FREEFORMDATE
           Move the MIT identified by ID to a new day.
     EOF
 
