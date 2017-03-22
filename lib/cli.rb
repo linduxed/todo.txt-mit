@@ -83,6 +83,15 @@ class CLI
         -h, --help      Displays help message.
         -v, --version   Displays version information.
 
+        Date strings:
+
+        DATE must be in the format of YYYY.MM.DD.
+        DAY can be full or short day names, today or tomorrow.
+        RELATIVEDATE is defined as an integer, followed by one of the letters
+        "d", "w" or "m" (days, weeks and months).
+
+        Sub-commands:
+
         mit
           List all MITs with default formatting.
 
@@ -94,17 +103,9 @@ class CLI
 
         mit DATE|DAY|RELATIVEDATE task
           Add MIT for chosen date.
-          DATE must be in the format of YYYY.MM.DD.
-          DAY can be full or short day names, today or tomorrow.
-          RELATIVEDATE is defined as an integer, followed by one of the letters
-          "d", "w" or "m" (days, weeks and months).
 
         mit mv ID DATE|DAY|RELATIVEDATE
           Move the MIT identified by ID to a new day.
-          DATE must be in the format of YYYY.MM.DD.
-          DAY can be full or short day names, today or tomorrow.
-          RELATIVEDATE is defined as an integer, followed by one of the letters
-          "d", "w" or "m" (days, weeks and months).
     EOF
 
     # Remove leading indentation
