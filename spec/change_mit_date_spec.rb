@@ -82,7 +82,6 @@ describe 'Changing the MIT date of a TODO' do
           (B) {2016.11.29} Play guitar @personal
           2016-11-26 Make phone call @personal
         EOF
-        original_todo_count = various_todos.split("\n").count
 
         with_fixed_time_and_todo_file('2016-12-01', various_todos) do |todo_file, env_extension|
           executable = Executable.run(
