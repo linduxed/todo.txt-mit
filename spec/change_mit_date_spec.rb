@@ -63,7 +63,7 @@ describe 'Changing the MIT date of a TODO' do
     end
   end
 
-  describe 'with the format `todo.sh mit mv RELATIVE_DATE "foobar"`' do
+  describe 'with the format `todo.sh mit mv 123 RELATIVE_DATE' do
     {
       '1d' => '2016.12.02',
       '3d' => '2016.12.04',

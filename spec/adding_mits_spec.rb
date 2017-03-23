@@ -185,7 +185,7 @@ describe 'Adding MITs' do
     end
   end
 
-  describe 'with the format `todo.sh mit RELATIVE_DATE "N(d/w/m)"`' do
+  describe 'with the format `todo.sh mit RELATIVE_DATE "foobar"`' do
     fixed_time = '2016-12-01'
     {
       '1d' => '2016.12.02',
