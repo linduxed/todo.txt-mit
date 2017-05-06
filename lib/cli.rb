@@ -35,6 +35,12 @@ class CLI
         TodoFileMutator.new(ENV['TODO_FILE']).remove_mit_date(
           task_id_string: ARGV[2],
         )
+      when ARGV[1] == 'cp'
+        TodoFileMutator.new(ENV['TODO_FILE']).copy_mit(
+          task_id_string: ARGV[2],
+          date_string: ARGV[3],
+          include_creation_date: ENV['TODOTXT_DATE_ON_ADD'],
+        )
       when !ARGV[1].nil? && !ARGV[2].nil?
         TodoFileMutator.new(ENV['TODO_FILE']).add_mit(
           date_string: ARGV[1],
@@ -79,6 +85,7 @@ class CLI
 
         mit [-h|--help|-v|--version] [date|day|relativedate task] [rm ID]
           [not @context|@context] [mv ID DATE|DAY|RELATIVEDATE|FREEFORMDATE]
+          [cp ID DATE|DAY|RELATIVEDATE|FREEFORMDATE]
 
         -h, --help      Displays help message.
         -v, --version   Displays version information.
@@ -108,6 +115,9 @@ class CLI
 
         mit mv ID DATE|DAY|RELATIVEDATE|FREEFORMDATE
           Move the MIT identified by ID to a new day.
+
+        mit cp ID DATE|DAY|RELATIVEDATE|FREEFORMDATE
+          Copy the task identified by ID to a new MIT for the chosen date.
     EOF
 
     # Remove leading indentation

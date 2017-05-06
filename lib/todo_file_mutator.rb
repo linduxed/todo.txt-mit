@@ -78,6 +78,25 @@ class TodoFileMutator
     "TODO: Removed MIT date from '#{changed_task.chomp}'"
   end
 
+  def copy_mit(task_id_string:, date_string:, include_creation_date:)
+    all_tasks = File.readlines(@todo_file_path)
+    if valid_task_id?(task_id_string, all_tasks)
+      task_id = task_id_string.to_i
+    else
+      raise(BadTaskIDError, "No task for ID: #{task_id_string}")
+    end
+
+    full_task = all_tasks[task_id - 1]
+    task_without_leading_priority_and_dates =
+      strip_leading_priority_and_dates(full_task)
+
+    add_mit(
+      date_string: date_string,
+      task: task_without_leading_priority_and_dates,
+      include_creation_date: include_creation_date,
+    )
+  end
+
   private
 
   def write_mit_at_end_of_todo_file(mit)
@@ -124,5 +143,15 @@ class TodoFileMutator
 
   def overwrite_todo_file(tasks)
     File.write(@todo_file_path, tasks.join)
+  end
+
+  def strip_leading_priority_and_dates(task)
+    priority_regex = /\([A-Z]\)/
+    date_regex = /\d{4}-\d{2}-\d{2}/
+
+    task.gsub(
+      /^(#{priority_regex} |x )?(#{date_regex} ){0,2}(#{Constants::MIT_DATE_REGEX} )?(.+)$/,
+      '\5'
+    )
   end
 end
