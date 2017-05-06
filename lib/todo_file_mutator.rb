@@ -13,6 +13,7 @@ class TodoFileMutator
   end
 
   def add_mit(date_string:, task:, include_creation_date:)
+    date_string or raise(MissingDateError, 'date argument is missing.')
     parsed_date = DateParser.new(date_string).parse
     parsed_date or raise(BadDateError, "\"#{date_string}\" is not a valid date.")
     mit_date = "{#{parsed_date.strftime('%Y.%m.%d')}}"
