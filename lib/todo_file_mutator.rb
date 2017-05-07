@@ -87,7 +87,7 @@ class TodoFileMutator
       raise(BadTaskIDError, "No task for ID: #{task_id_string}")
     end
 
-    full_task = all_tasks[task_id - 1]
+    full_task = all_tasks[task_id - 1].chomp
     task_without_leading_priority_and_dates =
       strip_leading_priority_and_dates(full_task)
 
